@@ -1,0 +1,9 @@
+{
+  "git.ignored": {
+    "node_modules/**": true
+  },
+  "files.exclude": {
+    "node_modules": true
+  },
+  "git.showUntrackedFiles": "no"
+}
