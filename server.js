@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import initWebRoute from "./src/routes/routers.js";
-import connectDB from "./src/config/connectDB.js";
+import connectDB from "./config/connectDB.js";
 
 
 
