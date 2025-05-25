@@ -1,12 +1,11 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+
+export default (sequelize, DataTypes) => {
     class User extends Model {
         static associate(models) {
             //mỗi user có 1 role
-            Role.hasMany(models.User, { foreignKey: 'roleId', as: 'users' });
+            User.hasOne(models.Role, { foreignKey: 'roleId', as: 'user' });
             // 1 user có nhiều order
             User.hasMany(models.Order, { foreignKey: 'userId', as: 'orders' });
             //1 user có nhiều review

@@ -1,8 +1,6 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
     class BatchDetail extends Model {
         static associate(models) {
             //mỗi batch detail thuộc về 1 batch
@@ -27,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         quantity: {
-            type: DataTypes.INT,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         costPrice: {
