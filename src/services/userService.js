@@ -48,19 +48,23 @@ const DeleteARole = (roleId) => {
             let role = await db.Role.findOne({
                 where: { roleId: roleId }
             })
+            console.error("check role", role)
             if (!role) {
                 resolve({
                     errCode: 2,
                     message: `The role isn't exist!`
                 })
+            } else {
+                await db.Role.destroy({
+                    where: { roleId: roleId }
+                })
+                resolve({
+                    errCode: 0,
+                    message: `The role is deleted!`
+                })
             }
-            await db.Role.destroy({
-                where: { roleId: roleId }
-            })
-            resolve({
-                errCode: 0,
-                message: `The role is deleted!`
-            })
+
+
 
         } catch (e) {
             console.error(e)

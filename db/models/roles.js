@@ -20,9 +20,12 @@ export default (sequelize, DataTypes) => {
         },
         code: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false
         },
-        description: DataTypes.STRING
+        description: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
     }, {
         sequelize,
         modelName: 'Role',

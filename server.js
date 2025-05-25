@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
     next();
 });
 // Setup Swagger route
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Middleware xử lý JSON và form data
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -40,5 +40,5 @@ const port = process.env.PORT || 6969;
 app.listen(port, () => {
     console.log("✅ Connect DB successfully");
     console.log("✅ Backend NodeJs is running on the port: " + port);
-    console.log(`Swagger UI available at: http://localhost:${port}`);
+    console.log(`Swagger UI available at: http://localhost:${port}/api-docs`);
 });
