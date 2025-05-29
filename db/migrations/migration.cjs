@@ -21,7 +21,6 @@ module.exports = {
     // Roles
     await queryInterface.createTable('Roles', {
       roleId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-      userId: Sequelize.INTEGER,
       code: Sequelize.STRING,
       description: Sequelize.STRING,
       createdAt: Sequelize.DATE,

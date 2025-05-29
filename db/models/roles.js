@@ -14,10 +14,6 @@ export default (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
-        userId: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
         code: {
             type: DataTypes.STRING,
             allowNull: false
