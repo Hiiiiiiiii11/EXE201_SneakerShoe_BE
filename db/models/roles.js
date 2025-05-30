@@ -1,8 +1,6 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
     class Role extends Model {
         static associate(models) {
 
@@ -16,15 +14,14 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
-        userId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         code: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        description: DataTypes.STRING
+        description: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
     }, {
         sequelize,
         modelName: 'Role',

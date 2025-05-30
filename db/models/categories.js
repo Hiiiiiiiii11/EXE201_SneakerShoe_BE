@@ -1,8 +1,6 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
     class Category extends Model {
         static associate(models) {
             //1 category có nhiều product
@@ -23,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Category',
-        tableName: 'Categorys',
+        tableName: 'Categories',
         timestamps: false
     });
     return Category;

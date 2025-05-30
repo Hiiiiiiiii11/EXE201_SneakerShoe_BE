@@ -1,8 +1,6 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
     class Promotion extends Model {
         static associate(models) {
 
@@ -20,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        desciption: {
+        description: {
             type: DataTypes.STRING,
             allowNull: true
         },

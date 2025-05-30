@@ -1,15 +1,13 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
     class Review extends Model {
         static associate(models) {
 
             //mỗi review thuộc về 1 user
             Review.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
             //mỗi review thuộc 1 orderdetail
-            Review.belongsTo(models.OrderDetail, { foreignKey: 'orderDetail', as: 'orderDetail' });
+            Review.belongsTo(models.OrderDetail, { foreignKey: 'orderDetailId', as: 'orderDetail' });
         }
     };
     Review.init({
@@ -22,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        orderDetail: {
+        orderDetailId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },

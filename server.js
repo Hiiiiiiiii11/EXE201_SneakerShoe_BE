@@ -1,8 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-import initWebRoute from "./src/routes/routers.js";
-import connectDB from "./src/config/connectDB.js";
+import initWebRoute from "./src/routes/routersApi.js";
+import connectDB from "./config/connectDB.js";
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
 
 
@@ -19,10 +21,14 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+// Setup Swagger route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Middleware xử lý JSON và form data
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Gọi cấu hình view và routes
 initWebRoute(app);
@@ -32,5 +38,7 @@ connectDB();
 
 const port = process.env.PORT || 6969;
 app.listen(port, () => {
+    console.log("✅ Connect DB successfully");
     console.log("✅ Backend NodeJs is running on the port: " + port);
+    console.log(`Swagger UI available at: http://localhost:${port}/api-docs`);
 });
