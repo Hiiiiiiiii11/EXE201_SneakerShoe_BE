@@ -21,7 +21,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        desciption: {
+        description: {
             type: DataTypes.STRING,
             allowNull: true
         },
@@ -33,7 +33,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        productImgae: {
+        productImage: {
             type: DataTypes.STRING,
             allowNull: true
         },

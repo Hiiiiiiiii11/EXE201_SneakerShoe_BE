@@ -12,7 +12,7 @@ module.exports = {
       address: Sequelize.STRING,
       assignAt: Sequelize.DATE,
       isActive: Sequelize.BOOLEAN,
-      image: Sequelize.BLOB,
+      image: Sequelize.STRING,
       roleId: Sequelize.INTEGER,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE
@@ -34,7 +34,7 @@ module.exports = {
       description: Sequelize.STRING,
       price: Sequelize.DECIMAL,
       categoryId: Sequelize.INTEGER,
-      productImage: Sequelize.BLOB,
+      productImage: Sequelize.STRING,
       Stock: Sequelize.INTEGER,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE

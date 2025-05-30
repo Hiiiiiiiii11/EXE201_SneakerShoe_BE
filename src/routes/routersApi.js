@@ -1,6 +1,9 @@
 import express from "express";
 import { handleGetAllRoles, handleCreateNewRole, handleDeleteRole, handleUpdateRole } from "../controllers/roleController.js";
 import { handleCreateNewCategory, handleDeleteCategory, handleGetAllCategory, handleUpdateCategory } from "../controllers/categoryController.js";
+import { handleUpLoadImage } from "../controllers/uploadController.js";
+import uploadService from "../services/uploadService.js";
+import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductByPage } from "../controllers/productController.js";
 let router = express.Router();
 
 
@@ -24,11 +27,17 @@ const initWebRoute = (app) => {
     // router.put('/update-user', handleEditUser);
     // router.delete('/delete-user',handleDeleteUser);
 
+
+    //api upload va chuyen anh thanh link
+    router.post('/upload-image', uploadService.uploadImage(), handleUpLoadImage)
+
+
     //api CRUD product
-    // router.get('/get-all-product', handleGetAllProduct);
-    // router.post('/create-new-product', handleCreateNewProduct);
-    // router.put('/update-product',handleEditProduct);
-    // router.delete('/delete-product',handleDeleteProduct);
+    router.get('/get-all-product', handleGetAllProduct);
+    router.get('/get-product-by-page', handleGetProductByPage);
+    router.post('/create-new-product', uploadService.uploadImage(), handleCreateNewProduct);
+    // router.put('/update-product', handleEditProduct);
+    router.delete('/delete-product/:id', handleDeleteProduct);
 
     //api CRUD category
     router.get('/get-all-category', handleGetAllCategory);
