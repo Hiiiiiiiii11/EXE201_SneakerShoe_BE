@@ -1,5 +1,6 @@
 import express from "express";
-import { handleGetAllRoles, handleCreateNewRole, handleDeleteRole, handleUpdateRole } from "../controllers/userController.js";
+import { handleGetAllRoles, handleCreateNewRole, handleDeleteRole, handleUpdateRole } from "../controllers/roleController.js";
+import { handleCreateNewCategory, handleDeleteCategory, handleGetAllCategory, handleUpdateCategory } from "../controllers/categoryController.js";
 let router = express.Router();
 
 
@@ -12,28 +13,28 @@ const initWebRoute = (app) => {
     router.delete('/delete-role/:id', handleDeleteRole);
 
     //api create user for admin role
-    // router.post('/api/admin/create-user',handleCreateUserAdmin);
+    // router.post('/admin/create-user',handleCreateUserAdmin);
 
     //api register and login
-    // router.post('/api/create-new-user',handleCreateNewUser);
-    // router.post('/api/login',handleLogin);
+    // router.post('/create-new-user',handleCreateNewUser);
+    // router.post('/login',handleLogin);
 
     // //api CRUD users
-    // router.get('/api/get-all-users', handleGetAllUsers);
-    // router.put('/api/edit-user', handleEditUser);
-    // router.delete('/api/delete-user',handleDeleteUser);
+    // router.get('/get-all-users', handleGetAllUsers);
+    // router.put('/update-user', handleEditUser);
+    // router.delete('/delete-user',handleDeleteUser);
 
     //api CRUD product
-    // router.get('/api/get-all-product', handleGetAllProduct);
-    // router.post('/api/create-new-product', handleCreateNewProduct);
-    // router.put('/api/edit-product',handleEditProduct);
-    // router.delete('/api/delete-product',handleDeleteProduct);
+    // router.get('/get-all-product', handleGetAllProduct);
+    // router.post('/create-new-product', handleCreateNewProduct);
+    // router.put('/update-product',handleEditProduct);
+    // router.delete('/delete-product',handleDeleteProduct);
 
     //api CRUD category
-    // router.get('/api/get-all-category', handleGetAllCategory);
-    // router.post('/api/create-new-category', handleCreateNewCategory);
-    // router.put('/api/edit-category',handleEditCategory);
-    // router.delete('/api/delete-category',handleDeleteCategory);
+    router.get('/get-all-category', handleGetAllCategory);
+    router.post('/create-new-category', handleCreateNewCategory);
+    router.put('/update-category/:id', handleUpdateCategory);
+    router.delete('/delete-category/:id', handleDeleteCategory);
 
     return app.use("/api", router);
 }

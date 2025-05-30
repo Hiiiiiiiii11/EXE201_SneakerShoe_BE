@@ -8,7 +8,7 @@ export default {
     password: process.env.DB_PASS, // (rỗng)
     database: process.env.DB_NAME, // sneakershoe
     host: process.env.DB_HOST, // localhost
-    port: 3306, // Cổng MySQL mặc định của XAMPP
+    port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
   },
   test: {
@@ -16,7 +16,7 @@ export default {
     password: process.env.DB_PASS,
     database: 'database_test',
     host: process.env.DB_HOST,
-    port: 3306,
+    port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
   },
   production: {
@@ -24,7 +24,7 @@ export default {
     password: process.env.DB_PASS,
     database: 'database_production',
     host: process.env.DB_HOST,
-    port: 3306,
+    port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
   },
 };

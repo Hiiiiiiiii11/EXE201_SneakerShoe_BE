@@ -1,4 +1,4 @@
-import { where } from 'sequelize';
+
 import db from '../../db/models/index.js';
 
 const GetAllRoles = async () => {
@@ -24,7 +24,6 @@ const CreateARole = async (data) => {
             }
 
             let newRole = await db.Role.create({
-                userId: data.userId,
                 code: data.code,
                 description: data.description
             });
@@ -48,7 +47,6 @@ const DeleteARole = (roleId) => {
             let role = await db.Role.findOne({
                 where: { roleId: roleId }
             })
-            console.error("check role", role)
             if (!role) {
                 resolve({
                     errCode: 2,

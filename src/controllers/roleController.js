@@ -1,4 +1,4 @@
-import userService from '../services/userService.js';
+import userService from '../services/roleService.js';
 
 
 /**
@@ -29,10 +29,6 @@ import userService from '../services/userService.js';
  *                       roleId:
  *                         type: integer
  *                         example: 1
- *                       userId:
- *                         type: integer
- *                         nullable: true
- *                         example: 1
  *                       code:
  *                         type: string
  *                         nullable: true
@@ -46,11 +42,7 @@ import userService from '../services/userService.js';
 export const handleGetAllRoles = async (req, res) => {
     try {
         const response = await userService.GetAllRoles();
-        return res.status(200).json({
-            errCode: 0,
-            errMessage: "OK",
-            roles: response,
-        });
+        return res.status(200).json(response)
     } catch (e) {
         console.error(e);
         return res.status(500).json({
@@ -76,8 +68,6 @@ export const handleGetAllRoles = async (req, res) => {
  *               - code
  *               - description
  *             properties:
- *               userId:
- *                 type: integer
  *               code:
  *                 type: string
  *               description:
@@ -99,9 +89,6 @@ export const handleGetAllRoles = async (req, res) => {
  *                   properties:
  *                     roleId:
  *                       type: integer
- *                     userId:
- *                       type: integer
- *                       nullable: true
  *                     code:
  *                       type: string
  *                     description:
@@ -111,11 +98,7 @@ export const handleGetAllRoles = async (req, res) => {
 export const handleCreateNewRole = async (req, res) => {
     try {
         const response = await userService.CreateARole(req.body);
-        return res.status(200).json({
-            errCode: 0,
-            errMessage: "Create role success",
-            role: response.role // Sửa lại cách trả dữ liệu
-        });
+        return res.status(200).json(response) // Sửa lại cách trả dữ liệu);
 
     } catch (e) {
         console.error("Error in handleCreateNewRole:", e);
@@ -209,9 +192,6 @@ export const handleDeleteRole = async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: integer
- *                 nullable: true
  *               code:
  *                 type: string
  *                 nullable: false

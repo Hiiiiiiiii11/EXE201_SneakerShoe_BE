@@ -21,7 +21,7 @@ export default (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Category',
-        tableName: 'Categorys',
+        tableName: 'Categories',
         timestamps: false
     });
     return Category;
