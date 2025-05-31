@@ -3,7 +3,7 @@ import { handleGetAllRoles, handleCreateNewRole, handleDeleteRole, handleUpdateR
 import { handleCreateNewCategory, handleDeleteCategory, handleGetAllCategory, handleUpdateCategory } from "../controllers/categoryController.js";
 import { handleUpLoadImage } from "../controllers/uploadController.js";
 import uploadService from "../services/uploadService.js";
-import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductByPage } from "../controllers/productController.js";
+import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 let router = express.Router();
 
 
@@ -36,7 +36,7 @@ const initWebRoute = (app) => {
     router.get('/get-all-product', handleGetAllProduct);
     router.get('/get-product-by-page', handleGetProductByPage);
     router.post('/create-new-product', uploadService.uploadImage(), handleCreateNewProduct);
-    // router.put('/update-product', handleEditProduct);
+    router.put('/update-product/:id', uploadService.uploadImage(), handleUpdateProduct);
     router.delete('/delete-product/:id', handleDeleteProduct);
 
     //api CRUD category

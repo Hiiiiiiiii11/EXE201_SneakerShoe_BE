@@ -16,7 +16,7 @@ const CreateNewCategory = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!data.categoryName) {
-                resolve({
+                return resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameter'
                 })
@@ -43,7 +43,7 @@ const UpdateCategory = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!data.CategoryId) {
-                resolve({
+                return resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameter'
                 })
@@ -62,11 +62,6 @@ const UpdateCategory = (data) => {
                     errMessage: 'Update category success',
                     category: updateCategory
                 });
-                resolve({
-                    errCode: 0,
-                    errMessage: "Create category success",
-                    category: category
-                })
             }
         } catch (e) {
             console.error("Error update category", e);

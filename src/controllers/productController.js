@@ -280,3 +280,110 @@ export const handleDeleteProduct = async (req, res) => {
 
 
 }
+
+/**
+ * @swagger
+ * /api/update-product/{id}:
+ *   put:
+ *     summary: Cập nhật sản phẩm theo ID (có thể kèm ảnh mới)
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID của sản phẩm cần cập nhật
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productName:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *                 format: float
+ *               categoryId:
+ *                 type: integer
+ *               stock:
+ *                 type: integer
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Cập nhật sản phẩm thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errCode:
+ *                   type: integer
+ *                   example: 0
+ *                 errMessage:
+ *                   type: string
+ *                   example: Update product success
+ *                 product:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: integer
+ *                       example: 1
+ *                     productName:
+ *                       type: string
+ *                       example: "Giày mới"
+ *                     description:
+ *                       type: string
+ *                       example: "Giày thể thao cao cấp"
+ *                     price:
+ *                       type: number
+ *                       example: 120.99
+ *                     categoryId:
+ *                       type: integer
+ *                       example: 2
+ *                     stock:
+ *                       type: integer
+ *                       example: 15
+ *                     productImage:
+ *                       type: string
+ *                       example: "https://res.cloudinary.com/...jpg"
+ *       400:
+ *         description: Thiếu tham số hoặc dữ liệu không hợp lệ
+ *       500:
+ *         description: Lỗi server
+ */
+
+export const handleUpdateProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const file = req.file;
+        const data = req.body;
+        // console.error("check", productId, data)
+        if (!productId || !data) {
+            return res.status(400).json({
+                errCode: 1,
+                message: "Missing required parameter!"
+            });
+        }
+        data.productId = productId;
+
+        if (file && file.path) {
+            data.productImage = file.path;
+        }
+        const response = await productService.UpdateProduct(data)
+        return res.status(200).json(response)
+
+    } catch (e) {
+        console.error(e)
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: 'Internal server error'
+        })
+    }
+}
