@@ -9,7 +9,6 @@ export const sequelize = new Sequelize(
     {
         host: process.env.DB_HOST,
         dialect: 'mysql',      // ⚠️ phải khai báo rõ dialect
-        logging: false,
         port: process.env.DB_PORT || 3306,      // (tuỳ chọn) để tắt log SQL query
     }
 );
