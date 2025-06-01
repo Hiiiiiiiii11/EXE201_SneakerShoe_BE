@@ -45,6 +45,12 @@ const initWebRoute = (app) => {
     router.put('/update-category/:id', handleUpdateCategory);
     router.delete('/delete-category/:id', handleDeleteCategory);
 
+    //api CRUD batch
+    router.get('/get-all-batch', handleGetAllBatch);
+    // router.post('/create-new-batch', handleCreateNewBatch);
+    // router.put('/update-batch/:id', handleUpdateBatch);
+    // router.delete('/delete-batch/:id', handleDeleteBatch);
+
     return app.use("/api", router);
 }
 
