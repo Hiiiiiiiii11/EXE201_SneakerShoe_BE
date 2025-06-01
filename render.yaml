@@ -8,15 +8,15 @@ services:
     startCommand: npm start
     envVars:
       - key: DB_HOST
-        value: 192.168.100.139
+        value: sql12.freesqldatabase.com
       - key: DB_PORT
         value: 3307
       - key: DB_USER
-        value: root
+        value: sql12782503
       - key: DB_PASS
-        value: ""
+        value: tNggvTlsQd
       - key: DB_NAME
-        value: sneakershoe
+        value: sql12782503
       - key: URL_REACT
         value: http://localhost:3000
       - key: PORT
