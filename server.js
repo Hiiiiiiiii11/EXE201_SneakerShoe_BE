@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 // Gọi cấu hình view và routes
 initWebRoute(app);
 
-// Kết nối DB
+// // Kết nối DB
 connectDB();
 
 const port = process.env.PORT || 6969;
