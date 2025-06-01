@@ -64,7 +64,7 @@ const CreateNewProduct = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!data.productName || !data.price || !data.categoryId || !data.productImage) {
-                resolve({
+                return resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameter'
                 })
@@ -98,7 +98,7 @@ const DeleteProduct = (productId) => {
                 where: { productId: productId }
             })
             if (!product) {
-                resolve({
+                return resolve({
                     errCode: 1,
                     errMessage: "The product is't exist"
                 })
@@ -120,8 +120,48 @@ const DeleteProduct = (productId) => {
 }
 
 
+const UpdateProduct = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.productId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: 'Missing product Id'
+                })
+            }
+            let product = await db.Product.findOne({
+                where: { productId: data.productId }
+            })
+            if (!product) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "The product is't exist'"
+                })
+            } else {
+                product.productName = data.productName,
+                    product.description = data.description,
+                    product.price = data.price,
+                    product.categoryId = data.categoryId,
+                    product.productImage = data.productImage,
+                    product.Stock = data.Stock
+                let updateProduct = await product.save();
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Update product success',
+                    product: updateProduct
+                });
+            }
+
+        } catch (e) {
+            console.error(e);
+            reject(e);
+        }
+    })
+}
+
 
 
 export default {
-    GetAllProduct, GetProductByPage, CreateNewProduct, DeleteProduct
+    GetAllProduct, GetProductByPage, CreateNewProduct, DeleteProduct, UpdateProduct
 }

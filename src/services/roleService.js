@@ -17,7 +17,7 @@ const CreateARole = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!data.code || !data.description) {
-                resolve({
+                return resolve({
                     errCode: 2,
                     message: "Missing require parameter!"
                 })
@@ -48,7 +48,7 @@ const DeleteARole = (roleId) => {
                 where: { roleId: roleId }
             })
             if (!role) {
-                resolve({
+                return resolve({
                     errCode: 2,
                     message: `The role isn't exist!`
                 })
@@ -86,7 +86,6 @@ const updateARole = (data) => {
             });
 
             if (role) {
-                role.userId = data.userId;
                 role.code = data.code;
                 role.description = data.description;
 

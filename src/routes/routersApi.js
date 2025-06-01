@@ -3,7 +3,7 @@ import { handleGetAllRoles, handleCreateNewRole, handleDeleteRole, handleUpdateR
 import { handleCreateNewCategory, handleDeleteCategory, handleGetAllCategory, handleUpdateCategory } from "../controllers/categoryController.js";
 import { handleUpLoadImage } from "../controllers/uploadController.js";
 import uploadService from "../services/uploadService.js";
-import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductByPage } from "../controllers/productController.js";
+import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 let router = express.Router();
 
 
@@ -36,7 +36,7 @@ const initWebRoute = (app) => {
     router.get('/get-all-product', handleGetAllProduct);
     router.get('/get-product-by-page', handleGetProductByPage);
     router.post('/create-new-product', uploadService.uploadImage(), handleCreateNewProduct);
-    // router.put('/update-product', handleEditProduct);
+    router.put('/update-product/:id', uploadService.uploadImage(), handleUpdateProduct);
     router.delete('/delete-product/:id', handleDeleteProduct);
 
     //api CRUD category
@@ -44,6 +44,12 @@ const initWebRoute = (app) => {
     router.post('/create-new-category', handleCreateNewCategory);
     router.put('/update-category/:id', handleUpdateCategory);
     router.delete('/delete-category/:id', handleDeleteCategory);
+
+    //api CRUD batch
+    router.get('/get-all-batch', handleGetAllBatch);
+    // router.post('/create-new-batch', handleCreateNewBatch);
+    // router.put('/update-batch/:id', handleUpdateBatch);
+    // router.delete('/delete-batch/:id', handleDeleteBatch);
 
     return app.use("/api", router);
 }

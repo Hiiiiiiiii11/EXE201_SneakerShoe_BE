@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: api-for-be
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DB_HOST
+        value: 1.53.52.169
+      - key: DB_PORT
+        value: 3307
+      - key: DB_USER
+        value: root
+      - key: DB_PASS
+        value: ""
+      - key: DB_NAME
+        value: sneakershoe
+      - key: URL_REACT
+        value: http://localhost:3000
+      - key: PORT
+        value: 8686
