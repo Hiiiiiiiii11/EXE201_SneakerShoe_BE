@@ -6,7 +6,8 @@ import uploadService from "../services/uploadService.js";
 import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 let router = express.Router();
 
-import sequelize from '../config/connectDB.js';
+import sequelize from '../../config/connectDB.js';
+
 
 router.get('/health', async (req, res) => {
     try {
@@ -65,7 +66,7 @@ const initWebRoute = (app) => {
     // router.put('/update-batch/:id', handleUpdateBatch);
     // router.delete('/delete-batch/:id', handleDeleteBatch);
 
-    return app.use("/api", router);
+    return app.use("/api/", router);
 }
 
 export default initWebRoute;
