@@ -8,16 +8,14 @@ services:
     startCommand: npm start
     envVars:
       - key: DB_HOST
-        value: sql12.freesqldatabase.com
+        value: mysql1002.site4now.net
       - key: DB_PORT
         value: 3307
       - key: DB_USER
-        value: sql12782503
+        value: ab9d81_sneaker
       - key: DB_PASS
-        value: tNggvTlsQd
+        value: Sneaker0123
       - key: DB_NAME
-        value: sql12782503
+        value: db_ab9d81_sneaker
       - key: URL_REACT
         value: http://localhost:3000
-      - key: PORT
-        value: 8686

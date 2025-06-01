@@ -36,14 +36,15 @@ initWebRoute(app);
 // // Kết nối DB
 const isConnected = await connectDB();
 
-if (!isConnected) {
-    console.log("❌ Không kết nối được database! Dừng server.");
+if (isConnected === false) {
+    console.log("❌ Không kết nối được database! Dừng server.", isConnected);
     process.exit(1);
+} else {
+    const port = process.env.PORT || 6969;
+    app.listen(port, () => {
+        console.log("✅ Connect DB successfully");
+        console.log("✅ Backend NodeJs is running on the port: " + port);
+        console.log(`Swagger UI available at: ${port}`);
+    });
 }
 
-const port = process.env.PORT || 6969;
-app.listen(port, () => {
-    console.log("✅ Connect DB successfully");
-    console.log("✅ Backend NodeJs is running on the port: " + port);
-    console.log(`Swagger UI available at: ${port}`);
-});
