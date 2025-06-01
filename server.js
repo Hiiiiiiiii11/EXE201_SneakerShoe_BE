@@ -40,5 +40,5 @@ const port = process.env.PORT || 6969;
 app.listen(port, () => {
     console.log("✅ Connect DB successfully");
     console.log("✅ Backend NodeJs is running on the port: " + port);
-    console.log(`Swagger UI available at: http://localhost:${port}/api-docs`);
+    console.log(`Swagger UI available at: ${port}`);
 });

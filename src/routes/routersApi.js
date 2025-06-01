@@ -9,6 +9,11 @@ let router = express.Router();
 
 
 const initWebRoute = (app) => {
+
+
+    app.get('/', (req, res) => {
+        res.send('Welcome to Sneaker Shoe API backend');
+    });
     //api CRUD roles
     router.get('/get-all-roles', handleGetAllRoles);
     router.post('/create-new-role', handleCreateNewRole);
