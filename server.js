@@ -34,7 +34,12 @@ app.use(express.urlencoded({ extended: true }));
 initWebRoute(app);
 
 // // Kết nối DB
-connectDB();
+const isConnected = await connectDB();
+
+if (!isConnected) {
+    console.log("❌ Không kết nối được database! Dừng server.");
+    process.exit(1);
+}
 
 const port = process.env.PORT || 6969;
 app.listen(port, () => {

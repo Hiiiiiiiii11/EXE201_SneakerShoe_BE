@@ -6,7 +6,16 @@ import uploadService from "../services/uploadService.js";
 import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 let router = express.Router();
 
+import sequelize from '../config/connectDB.js';
 
+router.get('/health', async (req, res) => {
+    try {
+        await sequelize.authenticate(); // Sequelize tự động throw lỗi nếu fail
+        res.status(200).json({ db: 'connected' });
+    } catch (err) {
+        res.status(500).json({ db: 'disconnected', error: err.message });
+    }
+});
 
 const initWebRoute = (app) => {
 
