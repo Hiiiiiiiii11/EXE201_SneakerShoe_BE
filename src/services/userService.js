@@ -34,12 +34,16 @@ const createUserSelf = async (data) => {
 };
 
 const createUserByAdmin = async (data) => {
+
+  console.error("check", data)
   try {
+    const salt = await bcrypt.genSalt(10);
     const role = await db.Role.findOne({ where: { code: 'STAFF' } });
     if (!role) return { errCode: 1, errMessage: "Role STAFF not found" };
-
+    const hashedPassword = await bcrypt.hash(data.password, salt);
     const newUser = await db.User.create({
       ...data,
+      password: hashedPassword,
       roleId: role.roleId
     });
 
@@ -57,7 +61,7 @@ const createUserByAdmin = async (data) => {
 const getAllUsers = async () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await db.User.findAll({ include: { model: db.Role, as: 'role' } });
+      const response = await db.User.findAll();
       if (response) {
         return resolve({
           errCode: 0,
