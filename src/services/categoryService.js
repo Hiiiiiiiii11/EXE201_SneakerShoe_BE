@@ -26,13 +26,19 @@ const GetCategoryById = (categoryId) => {
                 const response = await db.Category.findOne({
                     where: { CategoryId: categoryId }
                 })
-                resolve({
-                    errCode: 0,
-                    errMessage: 'Ok',
-                    category: response
-                })
+                if (response) {
+                    return resolve({
+                        errCode: 0,
+                        errMessage: 'Ok',
+                        category: response
+                    })
+                } else {
+                    return resolve({
+                        errCode: 1,
+                        errMessage: "Category is't exist",
+                    })
+                }
             }
-
         } catch (e) {
             console.error(e);
             reject(e);
