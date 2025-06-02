@@ -55,7 +55,7 @@ export const createUserBySelf = async (req, res) => {
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             required:
@@ -83,8 +83,10 @@ export const createUserBySelf = async (req, res) => {
  *       200:
  *         description: Tạo tài khoản thành công
  */
+
 export const createUserByAdmin = async (req, res) => {
   try {
+    console.error('check request', req.body)
     const result = await userService.createUserByAdmin(req.body);
     return res.status(200).json(result);
   } catch (e) {
