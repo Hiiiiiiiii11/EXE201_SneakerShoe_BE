@@ -185,11 +185,19 @@ const GetProductById = (productId) => {
                         }
                     ]
                 })
-                resolve({
-                    errCode: 0,
-                    errMessage: 'OK',
-                    product: response
-                })
+                if (response) {
+                    return resolve({
+                        errCode: 0,
+                        errMessage: 'OK',
+                        product: response
+                    })
+                } else {
+                    return resolve({
+                        errCode: 1,
+                        errMessage: "Product is't exist",
+                    })
+                }
+
 
             }
         } catch (e) {

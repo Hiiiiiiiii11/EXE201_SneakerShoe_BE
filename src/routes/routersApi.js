@@ -1,13 +1,14 @@
 import express from "express";
 import { verifyToken, isAdmin } from "../middleware/authMiddleware.js";
-import {handleGoogleLogin,handleLogin} from "../controllers/authController.js";
-import {createUserBySelf,createUserByAdmin,getAllUsers,getUserById,updateUser,deleteUser} from "../controllers/userController.js";
+import { handleGoogleLogin, handleLogin } from "../controllers/authController.js";
+import { createUserBySelf, createUserByAdmin, getAllUsers, getUserById, updateUser, deleteUser } from "../controllers/userController.js";
 import { handleGetAllRoles, handleCreateNewRole, handleDeleteRole, handleUpdateRole } from "../controllers/roleController.js";
 import { handleCreateNewCategory, handleDeleteCategory, handleGetAllCategory, handleGetCategoryById, handleUpdateCategory } from "../controllers/categoryController.js";
 import { handleUpLoadImage } from "../controllers/uploadController.js";
 import uploadService from "../services/uploadService.js";
 import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductById, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBatchById, handleUpdateBatch } from "../controllers/batchController.js";
+import { handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId } from "../controllers/batchDetailController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -43,10 +44,12 @@ const initWebRoute = (app) => {
     // Admin create user
     router.post("/admin/create-user", verifyToken, isAdmin, createUserByAdmin);
     //api CRUD users
+
     router.get("/get-all-users", verifyToken, isAdmin, getAllUsers);
     router.get("/get-user-detail/:id", verifyToken ,getUserById);
     router.put("/update-user/:id", uploadService.uploadImage(),verifyToken ,updateUser);
     router.delete("/delete-user/:id", verifyToken ,deleteUser);
+
     //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
     // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
     // Authorization: `Bearer ${token}`
@@ -77,8 +80,13 @@ const initWebRoute = (app) => {
     router.put('/update-batch/:id', handleUpdateBatch);
     router.delete('/delete-batch/:id', handleDeleteBatch);
 
-    //Promotion
-    //Review
+    //api CRUD batchDetail
+    router.get('/get-batchdetail-by-batchdetailid/:id', handleGetBatchDetailByBatchDetailId);
+    router.get('/get-batchdetail-by-batchid/:id', handleGetBatchDetailByBatchId);
+    // router.post('/create-new-batch', handleCreateNewBatch);
+    // router.put('/update-batch/:id', handleUpdateBatch);
+    // router.delete('/delete-batch/:id', handleDeleteBatch);
+
 
     return app.use("/api/", router);
 }

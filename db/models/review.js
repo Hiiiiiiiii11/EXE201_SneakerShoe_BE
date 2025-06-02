@@ -36,7 +36,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Review',
         tableName: 'Reviews',
-        timestamps: false
+        timestamps: true
     });
     return Review;
 };

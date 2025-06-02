@@ -1,4 +1,4 @@
-import { where } from "sequelize";
+
 import db from "../../db/models/index.js";
 
 const GetAllBatch = () => {
@@ -56,11 +56,18 @@ const GetBatchById = (batchId) => {
                 const response = await db.Batch.findOne({
                     where: { BatchId: batchId }
                 })
-                resolve({
-                    errCode: 0,
-                    errMessage: 'OK',
-                    batch: response
-                })
+                if (response) {
+                    return resolve({
+                        errCode: 0,
+                        errMessage: 'OK',
+                    })
+                } else {
+                    return resolve({
+                        errCode: 1,
+                        errMessage: "Batch is't exist",
+                    })
+                }
+
             }
 
         } catch (e) {
