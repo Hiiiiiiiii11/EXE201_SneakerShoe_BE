@@ -5,7 +5,7 @@ export default (sequelize, DataTypes) => {
     class User extends Model {
         static associate(models) {
             //mỗi user có 1 role
-            User.hasOne(models.Role, { foreignKey: 'roleId', as: 'user' });
+            User.belongsTo(models.Role, { foreignKey: 'roleId', as: 'role' });
             // 1 user có nhiều order
             User.hasMany(models.Order, { foreignKey: 'userId', as: 'orders' });
             //1 user có nhiều review

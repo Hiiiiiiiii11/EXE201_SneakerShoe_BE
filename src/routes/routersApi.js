@@ -1,4 +1,7 @@
 import express from "express";
+import { verifyToken, isAdmin } from "../middleware/authMiddleware.js";
+import {handleGoogleLogin,handleLogin} from "../controllers/authController.js";
+import {createUserBySelf,createUserByAdmin,getAllUsers,getUserById,updateUser,deleteUser} from "../controllers/userController.js";
 import { handleGetAllRoles, handleCreateNewRole, handleDeleteRole, handleUpdateRole } from "../controllers/roleController.js";
 import { handleCreateNewCategory, handleDeleteCategory, handleGetAllCategory, handleGetCategoryById, handleUpdateCategory } from "../controllers/categoryController.js";
 import { handleUpLoadImage } from "../controllers/uploadController.js";
@@ -32,6 +35,22 @@ const initWebRoute = (app) => {
     // router.put('/update-user', handleEditUser);
     // router.delete('/delete-user',handleDeleteUser);
 
+    // 📌 Auth routes
+    router.post("/login", handleLogin);
+    router.post("/google-login", handleGoogleLogin);
+
+    //User
+    router.post("/customer/create-user", createUserBySelf);
+    // Admin create user
+    router.post("/admin/create-user", verifyToken, createUserByAdmin);
+    //api CRUD users
+    router.get("/get-all-users",getAllUsers);
+    router.get("/get-user-detail/:id", verifyToken ,getUserById);
+    router.put("/update-user/:id", verifyToken ,updateUser);
+    router.delete("/delete-user/:id", verifyToken ,deleteUser);
+    //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
+    // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
+    // Authorization: `Bearer ${token}`
 
     //api upload va chuyen anh thanh link
     router.post('/upload-image', uploadService.uploadImage(), handleUpLoadImage)

@@ -1,0 +1,109 @@
+import db from "../../db/models/index.js";
+import bcrypt from "bcrypt";
+
+
+
+
+
+const createUserSelf = async (data) => {
+  try {
+    console.log("📩 Received data:", data);
+
+    const role = await db.Role.findOne({ where: { code: 'CUSTOMER' } });
+    console.log("🔍 Found role:", role);
+
+    if (!role) return { errCode: 1, errMessage: "Role CUSTOMER not found" };
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(data.password, salt);
+
+    const newUser = await db.User.create({
+      ...data,
+      password: hashedPassword,
+      roleId: role.roleId
+    });
+
+    console.log("✅ Created user:", newUser);
+
+    return {
+      errCode: 0,
+      errMessage: "Register success",
+      user: newUser
+    };
+  } catch (e) {
+    console.error("🔥 createUserSelf error:", e);
+    throw e;
+  }
+};
+
+const createUserByAdmin = async (data) => {
+  try {
+    const role = await db.Role.findOne({ where: { code: 'STAFF' } });
+    if (!role) return { errCode: 1, errMessage: "Role STAFF not found" };
+
+    const newUser = await db.User.create({
+      ...data,
+      roleId: role.roleId
+    });
+
+    return {
+      errCode: 0,
+      errMessage: "User created by admin successfully",
+      user: newUser
+    };
+  } catch (error) {
+    console.error("Error creating user by admin:", error);
+    throw error;
+  }
+};
+
+const getAllUsers = async () => {
+  return await db.User.findAll({ include: { model: db.Role, as: 'role' } });
+};
+
+const getUserById = async (id) => {
+  return await db.User.findByPk(id, { include: { model: db.Role, as: 'role' } });
+};
+
+
+const updateUser = async (id, data) => {
+  try {
+    const user = await db.User.findByPk(id);
+    if (!user) return { errCode: 1, errMessage: "User not found" };
+
+    await user.update(data);
+
+    return {
+      errCode: 0,
+      errMessage: "User updated successfully",
+      user
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteUser = async (id) => {
+  try {
+    const user = await db.User.findByPk(id);
+    if (!user) return { errCode: 1, errMessage: "User not found" };
+
+    await user.destroy();
+
+    return {
+      errCode: 0,
+      errMessage: "User deleted successfully"
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export default {
+  createUserSelf,
+  createUserByAdmin,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser
+};
