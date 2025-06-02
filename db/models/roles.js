@@ -26,7 +26,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Role',
         tableName: 'Roles',
-        timestamps: false
+        timestamps: true
     });
     return Role;
 };
