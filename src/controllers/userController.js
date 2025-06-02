@@ -9,7 +9,7 @@ import userService from "../services/userService.js";
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -55,7 +55,7 @@ export const createUserBySelf = async (req, res) => {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -121,6 +121,8 @@ export const getAllUsers = async (req, res) => {
  *   get:
  *     summary: Lấy thông tin người dùng theo ID
  *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -147,6 +149,8 @@ export const getUserById = async (req, res) => {
  *   put:
  *     summary: Cập nhật thông tin người dùng
  *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -156,7 +160,7 @@ export const getUserById = async (req, res) => {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -168,13 +172,22 @@ export const getUserById = async (req, res) => {
  *                 type: string
  *               address:
  *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Cập nhật thành công
  */
 export const updateUser = async (req, res) => {
   try {
-    const result = await userService.updateUser(req.params.id, req.body);
+    const data = req.body;
+    const userId = req.params.id;
+    if (req.file && req.file.path) {
+      data.image = req.file.path;
+    }
+    data.userId = userId;
+    const result = await userService.updateUser(userId, data);
     return res.status(200).json(result);
   } catch (e) {
     console.error(e);
@@ -182,12 +195,15 @@ export const updateUser = async (req, res) => {
   }
 };
 
+
 /**
  * @swagger
  * /api/delete-user/{id}:
  *   delete:
  *     summary: Xóa người dùng
  *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

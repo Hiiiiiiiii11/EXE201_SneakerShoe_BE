@@ -1,25 +1,24 @@
-
 import db from "../../db/models/index.js";
-import bcrypt from "bcryptjs"; // hoặc bcrypt
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-// Regular expression to validate email format
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const loginWithEmail = async (email, password) => {
 
-  
+// Regex kiểm tra email hợp lệ
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const loginWithEmail = async (email, password) => {
   if (!email || !emailRegex.test(email)) {
     return { errCode: 1, errMessage: "Email không hợp lệ" };
   }
 
   const user = await db.User.findOne({ where: { email } });
-  if (!user) return { errCode: 1, errMessage: "User not found" };
+  if (!user) return { errCode: 2, errMessage: "User not found" };
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return { errCode: 2, errMessage: "Wrong password" };
+  if (!isMatch) return { errCode: 3, errMessage: "Wrong password" };
 
   const token = jwt.sign({ id: user.userId, roleId: user.roleId }, JWT_SECRET, { expiresIn: "1d" });
 
@@ -32,13 +31,11 @@ const loginWithGoogle = async (tokenId) => {
     audience: process.env.GOOGLE_CLIENT_ID
   });
   const payload = ticket.getPayload();
-  const { email, given_name, family_name } = payload;
+  const { email, given_name, family_name, picture } = payload;
 
-  // Kiểm tra email có hợp lệ không
   if (!email || !emailRegex.test(email)) {
     return { errCode: 1, errMessage: "Email không hợp lệ" };
   }
-
 
   let user = await db.User.findOne({ where: { email } });
   if (!user) {
@@ -47,8 +44,10 @@ const loginWithGoogle = async (tokenId) => {
       firstName: given_name,
       lastName: family_name,
       email,
+      image: picture, // lưu avatar Google
       password: null,
-      roleId: role.roleId
+      roleId: role.roleId,
+      isActive: true
     });
   }
 

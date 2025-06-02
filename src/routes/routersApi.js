@@ -42,12 +42,14 @@ const initWebRoute = (app) => {
     //User
     router.post("/customer/create-user", createUserBySelf);
     // Admin create user
-    router.post("/admin/create-user", verifyToken, createUserByAdmin);
+    router.post("/admin/create-user", verifyToken, isAdmin, createUserByAdmin);
     //api CRUD users
-    router.get("/get-all-users", getAllUsers);
-    router.get("/get-user-detail/:id", verifyToken, getUserById);
-    router.put("/update-user/:id", verifyToken, updateUser);
-    router.delete("/delete-user/:id", verifyToken, deleteUser);
+
+    router.get("/get-all-users", verifyToken, isAdmin, getAllUsers);
+    router.get("/get-user-detail/:id", verifyToken ,getUserById);
+    router.put("/update-user/:id", uploadService.uploadImage(),verifyToken ,updateUser);
+    router.delete("/delete-user/:id", verifyToken ,deleteUser);
+
     //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
     // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
     // Authorization: `Bearer ${token}`
@@ -84,6 +86,7 @@ const initWebRoute = (app) => {
     // router.post('/create-new-batch', handleCreateNewBatch);
     // router.put('/update-batch/:id', handleUpdateBatch);
     // router.delete('/delete-batch/:id', handleDeleteBatch);
+
 
     return app.use("/api/", router);
 }
