@@ -38,7 +38,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'User',
         tableName: 'Users',
-        timestamps: false // nếu bạn không dùng createdAt/updatedAt
+        timestamps: true // nếu bạn không dùng createdAt/updatedAt
     });
     return User;
 };

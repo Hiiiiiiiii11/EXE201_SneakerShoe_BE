@@ -21,16 +21,12 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             allowNull: false
         },
-        createAt: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
 
     }, {
         sequelize,
         modelName: 'Batch',
         tableName: 'Batches',
-        timestamps: false
+        timestamps: true
     });
     return Batch;
 };

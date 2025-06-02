@@ -44,6 +44,12 @@ const CreateARole = async (data) => {
 const DeleteARole = (roleId) => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (!roleId) {
+                return resolve({
+                    errCode: 1,
+                    message: `Missing roleId`
+                })
+            }
             let role = await db.Role.findOne({
                 where: { roleId: roleId }
             })

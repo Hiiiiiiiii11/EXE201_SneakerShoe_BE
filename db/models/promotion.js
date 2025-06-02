@@ -42,7 +42,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Promotion',
         tableName: 'Promotions',
-        timestamps: false
+        timestamps: true
     });
     return Promotion;
 };

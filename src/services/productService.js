@@ -94,6 +94,12 @@ const CreateNewProduct = (data) => {
 const DeleteProduct = (productId) => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (!productId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing productId"
+                })
+            }
             let product = await db.Product.findOne({
                 where: { productId: productId }
             })
@@ -160,8 +166,39 @@ const UpdateProduct = (data) => {
     })
 }
 
+const GetProductById = (productId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!productId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing productId"
+                })
+            } else {
+                const response = await db.Product.findOne({
+                    where: { productId: productId },
+                    include: [
+                        {
+                            model: db.Category,
+                            as: 'category',
+                            attributes: ['categoryName'] // Chỉ lấy tên category
+                        }
+                    ]
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: 'OK',
+                    product: response
+                })
 
+            }
+        } catch (e) {
+            console.error(e);
+            reject(e);
+        }
+    })
+}
 
 export default {
-    GetAllProduct, GetProductByPage, CreateNewProduct, DeleteProduct, UpdateProduct
+    GetAllProduct, GetProductByPage, CreateNewProduct, DeleteProduct, UpdateProduct, GetProductById
 }

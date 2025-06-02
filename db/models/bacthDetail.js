@@ -41,7 +41,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'BatchDetail',
         tableName: 'BatchDetails',
-        timestamps: false
+        timestamps: true
     });
     return BatchDetail;
 };

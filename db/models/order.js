@@ -37,7 +37,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Order',
         tableName: 'Orders',
-        timestamps: false
+        timestamps: true
     });
     return Order;
 };

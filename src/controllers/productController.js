@@ -163,6 +163,77 @@ export const handleGetProductByPage = async (req, res) => {
     }
 };
 
+
+/**
+ * @swagger
+ * /api/get-product-by-id/{id}:
+ *   get:
+ *     summary: Lấy product bằng id
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID của product 
+ *     responses:
+ *       200:
+ *         description: Lấy product bằng productId
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errCode:
+ *                   type: integer
+ *                   example: 0
+ *                 errMessage:
+ *                   type: string
+ *                   example: OK
+ *                 product:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       productId:
+ *                         type: integer
+ *                         example: 1
+ *                       productName:
+ *                         type: string
+ *                         nullable: true
+ *                         example: "product"
+ *                       price:
+ *                         type: decimal
+ *                         nullable: true
+ *                         example: "10"
+ *                       categoryName:
+ *                         type: string
+ *                         nullable: true
+ *                         example: "Shoe"
+ *                       productImgae:
+ *                         type: string
+ *                         nullable: true
+ *                         example: "https:..."
+ *                       Stock:
+ *                         type: interger
+ *                         nullable: true
+ *                         example: "10"
+ */
+export const handleGetProductById = async (req, res) => {
+    try {
+        const productId = req.params.id
+        const response = await productService.GetProductById(productId)
+        return res.status(200).json(response)
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: "Internal server error"
+        });
+    }
+}
+
 /**
  * @swagger
  * /api/create-new-product:

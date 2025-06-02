@@ -1,4 +1,5 @@
 
+import { where } from "sequelize";
 import db from "../../db/models/index.js";
 
 const GetAllCategory = () => {
@@ -12,6 +13,35 @@ const GetAllCategory = () => {
         }
     })
 };
+
+const GetCategoryById = (categoryId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!categoryId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: 'Missing categoryId'
+                })
+            } else {
+                const response = await db.Category.findOne({
+                    where: { CategoryId: categoryId }
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Ok',
+                    category: response
+                })
+            }
+
+        } catch (e) {
+            console.error(e);
+            reject(e);
+        }
+
+
+
+    })
+}
 const CreateNewCategory = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -62,6 +92,11 @@ const UpdateCategory = (data) => {
                     errMessage: 'Update category success',
                     category: updateCategory
                 });
+            } else {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Category is't exist",
+                });
             }
         } catch (e) {
             console.error("Error update category", e);
@@ -74,6 +109,12 @@ const DeleteACategory = (categoryId) => {
     console.error('check category deleyte ', categoryId)
     return new Promise(async (resolve, reject) => {
         try {
+            if (!categoryId) {
+                resolve({
+                    errCode: 1,
+                    message: `Mising categoryId`
+                })
+            }
             let category = await db.Category.findOne({
                 where: { categoryId: categoryId }
             })
@@ -106,5 +147,5 @@ const DeleteACategory = (categoryId) => {
 
 
 export default {
-    GetAllCategory, CreateNewCategory, UpdateCategory, DeleteACategory
+    GetAllCategory, CreateNewCategory, UpdateCategory, DeleteACategory, GetCategoryById
 }
