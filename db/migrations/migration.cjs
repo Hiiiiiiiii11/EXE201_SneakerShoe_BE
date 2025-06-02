@@ -10,7 +10,7 @@ module.exports = {
       email: { type: Sequelize.STRING, unique: true },
       phoneNumber: Sequelize.STRING,
       address: Sequelize.STRING,
-      assignAt: Sequelize.DATE,
+      // assignAt: Sequelize.DATE,
       isActive: Sequelize.BOOLEAN,
       image: Sequelize.STRING,
       roleId: Sequelize.INTEGER,
@@ -65,7 +65,7 @@ module.exports = {
       productId: Sequelize.INTEGER,
       quantity: Sequelize.INTEGER,
       costPrice: Sequelize.DECIMAL,
-      promotionId: Sequelize.INTEGER,
+      // promotionId: Sequelize.INTEGER,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE
     });

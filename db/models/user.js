@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
         },
         phoneNumber: DataTypes.STRING,
         address: DataTypes.STRING,
-        assignAt: DataTypes.STRING,
+        // assignAt: DataTypes.STRING,
         isActive: DataTypes.BOOLEAN,
         image: DataTypes.STRING,
         roleId: {

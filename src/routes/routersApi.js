@@ -5,6 +5,7 @@ import { handleUpLoadImage } from "../controllers/uploadController.js";
 import uploadService from "../services/uploadService.js";
 import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductById, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBatchById, handleUpdateBatch } from "../controllers/batchController.js";
+import { handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId } from "../controllers/batchDetailController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -57,6 +58,13 @@ const initWebRoute = (app) => {
     router.post('/create-new-batch', handleCreateNewBatch);
     router.put('/update-batch/:id', handleUpdateBatch);
     router.delete('/delete-batch/:id', handleDeleteBatch);
+
+    //api CRUD batchDetail
+    router.get('/get-batchdetail-by-batchdetailid/:id', handleGetBatchDetailByBatchDetailId);
+    router.get('/get-batchdetail-by-batchid/:id', handleGetBatchDetailByBatchId);
+    // router.post('/create-new-batch', handleCreateNewBatch);
+    // router.put('/update-batch/:id', handleUpdateBatch);
+    // router.delete('/delete-batch/:id', handleDeleteBatch);
 
     return app.use("/api/", router);
 }

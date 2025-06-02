@@ -32,10 +32,10 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             allowNull: false
         },
-        promotionId: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        }
+        // promotionId: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: true
+        // }
 
     }, {
         sequelize,
