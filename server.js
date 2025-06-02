@@ -44,7 +44,7 @@ if (isConnected === false) {
     app.listen(port, () => {
         console.log("✅ Connect DB successfully");
         console.log("✅ Backend NodeJs is running on the port: " + port);
-        console.log(`Swagger UI available at: http://localhost:${port}`);
+        console.log(`Swagger UI available at: http://localhost:${port}/api-docs`);
     });
 }
 
