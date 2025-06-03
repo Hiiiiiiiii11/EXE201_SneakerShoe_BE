@@ -8,6 +8,11 @@ import bcrypt from "bcrypt";
 
 const createUserSelf = async (data) => {
   try {
+    // Kiểm tra email đã tồn tại chưa
+    const existingUser = await db.User.findOne({ where: { email: data.email } });
+    if (existingUser) {
+      return { errCode: 2, errMessage: "Email đã được sử dụng" };
+    }
 
     const role = await db.Role.findOne({ where: { code: 'CUSTOMER' } });
     if (!role) return { errCode: 1, errMessage: "Role CUSTOMER not found" };
@@ -20,7 +25,6 @@ const createUserSelf = async (data) => {
       password: hashedPassword,
       roleId: role.roleId
     });
-
 
     return {
       errCode: 0,

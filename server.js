@@ -5,13 +5,15 @@ import initWebRoute from "./src/routes/routersApi.js";
 import connectDB from "./config/connectDB.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
-
+import multer from "multer";
 
 
 // Load biến môi trường từ .env
 dotenv.config();
 
 const app = express();
+const upload = multer();
+app.use(upload.none());
 
 // Cấu hình CORS thủ công
 app.use(function (req, res, next) {
