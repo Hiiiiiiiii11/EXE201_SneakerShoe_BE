@@ -10,6 +10,8 @@ import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handl
 import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBatchById, handleUpdateBatch } from "../controllers/batchController.js";
 import { handleCreateNewBatchDetail, handleDeleteBatchDetail, handleGetAllBatchDetail, handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId, handleUpdateBatchDetail } from "../controllers/batchDetailController.js";
 import { handleGetCartByUserId } from "../controllers/cartController.js";
+import { createPromotion, getAllPromotions, getPromotionById, updatePromotion, deletePromotion } from "../controllers/promotionController.js";
+
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -33,15 +35,15 @@ const initWebRoute = (app) => {
     // Admin create user
     router.post("/admin/create-user", verifyToken, isAdmin, createUserByAdmin);
     //api CRUD users
-
+    //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
+        // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
+        // Authorization: `Bearer ${token}`
     router.get("/get-all-users", verifyToken, isAdmin, getAllUsers);
     router.get("/get-user-detail/:id", verifyToken, getUserById);
     router.put("/update-user/:id", uploadService.uploadImage(), verifyToken, updateUser);
     router.delete("/delete-user/:id", verifyToken, deleteUser);
 
-    //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
-    // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
-    // Authorization: `Bearer ${token}`
+    
 
     //api upload va chuyen anh thanh link
     router.post('/upload-image', uploadService.uploadImage(), handleUpLoadImage)
@@ -84,6 +86,12 @@ const initWebRoute = (app) => {
     // router.delete('/delete-a-product-from-cart/:id', handleDeleteProductFromCart);
     // router.delete('/delete-all-product-from-cart/:id', handleDeleteAllProductFromCart);
 
+    // API CRUD Promotions
+    router.post("/create-promotion", createPromotion);
+    router.get("/get-all-promotions", getAllPromotions);
+    router.get("/get-promotion/:id", getPromotionById);
+    router.put("/update-promotion/:id", updatePromotion);
+    router.delete("/delete-promotion/:id", deletePromotion);
 
     return app.use("/api/", router);
 }

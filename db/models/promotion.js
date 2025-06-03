@@ -14,7 +14,7 @@ export default (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
-        PromotionName: {
+        promotionName: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -34,7 +34,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        miniumAmount: {
+        minimumAmount: {
             type: DataTypes.FLOAT,
             allowNull: true
         }
