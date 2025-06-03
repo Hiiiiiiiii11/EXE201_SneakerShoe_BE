@@ -123,7 +123,6 @@ const UpdateBatch = (data) => {
                 const batch = await db.Batch.findOne({
                     where: { BatchId: data.batchId }
                 })
-                console.error('check', batch)
                 if (batch) {
                     batch.arrivalDate = data.arrivalDate;
                     batch.totalCost = data.totalCost;

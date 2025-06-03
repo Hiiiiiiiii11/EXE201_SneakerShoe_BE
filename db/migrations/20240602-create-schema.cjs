@@ -36,6 +36,26 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
+      //Cart
+      await queryInterface.createTable('Carts', {
+        CartId: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        userId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Users',
+            key: 'userId'
+          },
+          onDelete: 'CASCADE'
+        },
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
+      });
+
       // Categories
       await queryInterface.createTable('Categories', {
         categoryId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -80,6 +100,39 @@ module.exports = {
         productImage: Sequelize.STRING,
         Stock: Sequelize.INTEGER,
 
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
+      });
+
+      //Cart Item
+      await queryInterface.createTable('CartItems', {
+        CartItemId: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        CartId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Carts',
+            key: 'CartId'
+          },
+          onDelete: 'CASCADE'
+        },
+        productId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Products',
+            key: 'productId'
+          },
+          onDelete: 'CASCADE'
+        },
+        quantity: {
+          type: Sequelize.INTEGER,
+          defaultValue: 1
+        },
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -265,6 +318,8 @@ module.exports = {
     await queryInterface.dropTable('Promotions');
     await queryInterface.dropTable('Products');
     await queryInterface.dropTable('Categories');
+    await queryInterface.dropTable('CartItems');
+    await queryInterface.dropTable('Carts');
     await queryInterface.dropTable('Users');
     await queryInterface.dropTable('Roles');
   }

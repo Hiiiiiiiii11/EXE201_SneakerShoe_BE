@@ -5,8 +5,12 @@ import db from "../../db/models/index.js";
 const GetAllCategory = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const roles = await db.Category.findAll();
-            resolve(roles)
+            const category = await db.Category.findAll();
+            return resolve({
+                errCode: 0,
+                errMessage: 'Ok',
+                category: category
+            })
         } catch (e) {
             console.error(e);
             reject(e)

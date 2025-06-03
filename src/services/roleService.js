@@ -5,7 +5,11 @@ const GetAllRoles = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             const roles = await db.Role.findAll();
-            resolve(roles)
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                role: roles
+            })
         } catch (e) {
             console.error(e);
             throw e;

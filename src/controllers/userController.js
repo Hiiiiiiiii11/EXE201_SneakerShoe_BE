@@ -9,7 +9,7 @@ import userService from "../services/userService.js";
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             required:
@@ -37,6 +37,7 @@ import userService from "../services/userService.js";
 export const createUserBySelf = async (req, res) => {
   try {
     const data = req.body;
+    console.error('check request', req.body)
     const response = await userService.createUserSelf(data);
     return res.status(200).json(response);
   } catch (e) {
