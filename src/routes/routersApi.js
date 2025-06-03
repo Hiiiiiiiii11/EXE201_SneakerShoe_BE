@@ -8,7 +8,8 @@ import { handleUpLoadImage } from "../controllers/uploadController.js";
 import uploadService from "../services/uploadService.js";
 import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductById, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBatchById, handleUpdateBatch } from "../controllers/batchController.js";
-import { handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId } from "../controllers/batchDetailController.js";
+import { handleCreateNewBatchDetail, handleDeleteBatchDetail, handleGetAllBatchDetail, handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId, handleUpdateBatchDetail } from "../controllers/batchDetailController.js";
+import { handleGetCartByUserId } from "../controllers/cartController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -22,18 +23,6 @@ const initWebRoute = (app) => {
     router.post('/create-new-role', handleCreateNewRole);
     router.put('/update-role/:id', handleUpdateRole);
     router.delete('/delete-role/:id', handleDeleteRole);
-
-    //api create user for admin role
-    // router.post('/admin/create-user',handleCreateUserAdmin);
-
-    //api register and login
-    // router.post('/create-new-user',handleCreateNewUser);
-    // router.post('/login',handleLogin);
-
-    // //api CRUD users
-    // router.get('/get-all-users', handleGetAllUsers);
-    // router.put('/update-user', handleEditUser);
-    // router.delete('/delete-user',handleDeleteUser);
 
     // 📌 Auth routes
     router.post("/login", handleLogin);
@@ -81,11 +70,19 @@ const initWebRoute = (app) => {
     router.delete('/delete-batch/:id', handleDeleteBatch);
 
     //api CRUD batchDetail
+    router.get('/get-all-batchdetail', handleGetAllBatchDetail);
     router.get('/get-batchdetail-by-batchdetailid/:id', handleGetBatchDetailByBatchDetailId);
     router.get('/get-batchdetail-by-batchid/:id', handleGetBatchDetailByBatchId);
-    // router.post('/create-new-batch', handleCreateNewBatch);
-    // router.put('/update-batch/:id', handleUpdateBatch);
-    // router.delete('/delete-batch/:id', handleDeleteBatch);
+    router.post('/create-new-batchdetail', handleCreateNewBatchDetail);
+    router.put('/update-batchdetail/:id', handleUpdateBatchDetail);
+    router.delete('/delete-batchdetail/:id', handleDeleteBatchDetail);
+
+    //api CRUD Cart
+    router.get('/get-cart-by-userid/:id', handleGetCartByUserId);
+    router.post('/add-new-product-to-cart', handleAddNewProductToCart);
+    // router.put('/update-product-cart/:id', handleUpdateProductCart);
+    // router.delete('/delete-a-product-from-cart/:id', handleDeleteProductFromCart);
+    // router.delete('/delete-all-product-from-cart/:id', handleDeleteAllProductFromCart);
 
 
     return app.use("/api/", router);

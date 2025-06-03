@@ -13,7 +13,11 @@ const GetAllProduct = () => {
                     }
                 ]
             });
-            resolve(product)
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                product: product
+            })
 
         } catch (e) {
             console.error(e);
