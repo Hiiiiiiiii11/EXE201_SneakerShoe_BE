@@ -122,7 +122,7 @@ export const handleGetBatchById = async (req, res) => {
  * @swagger
  * /api/create-new-batch:
  *   post:
- *     summary: Tạo vai trò mới
+ *     summary: Tạo lô hàng  mới
  *     tags: [Batches]
  *     requestBody:
  *       required: true
@@ -141,7 +141,7 @@ export const handleGetBatchById = async (req, res) => {
  *                 format: decimal
  *     responses:
  *       200:
- *         description: Vai trò được tạo thành công
+ *         description: Lô hàng được tạo thành công
  *         content:
  *           application/json:
  *             schema:
@@ -245,7 +245,6 @@ export const handleUpdateBatch = async (req, res) => {
             });
         }
         data.batchId = id;
-        console.error('check data', data)
         const response = await bactchService.UpdateBatch(data);
         res.status(200).json(response)
 
@@ -262,7 +261,7 @@ export const handleUpdateBatch = async (req, res) => {
  * @swagger
  * /api/delete-batch/{id}:
  *   delete:
- *     summary: Xóa vai trò theo ID
+ *     summary: Xóa lô hàng theo ID
  *     tags: [Batches]
  *     parameters:
  *       - in: path
