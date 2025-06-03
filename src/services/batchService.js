@@ -60,6 +60,7 @@ const GetBatchById = (batchId) => {
                     return resolve({
                         errCode: 0,
                         errMessage: 'OK',
+                        batches: response
                     })
                 } else {
                     return resolve({

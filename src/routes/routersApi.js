@@ -12,6 +12,7 @@ import { handleCreateNewBatchDetail, handleDeleteBatchDetail, handleGetAllBatchD
 import { handleGetCartByUserId } from "../controllers/cartController.js";
 import { createPromotion, getAllPromotions, getPromotionById, updatePromotion, deletePromotion } from "../controllers/promotionController.js";
 
+import { handleAddNewProductToCart, handleGetCartByUserId } from "../controllers/cartController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -36,14 +37,14 @@ const initWebRoute = (app) => {
     router.post("/admin/create-user", verifyToken, isAdmin, createUserByAdmin);
     //api CRUD users
     //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
-        // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
-        // Authorization: `Bearer ${token}`
+    // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
+    // Authorization: `Bearer ${token}`
     router.get("/get-all-users", verifyToken, isAdmin, getAllUsers);
     router.get("/get-user-detail/:id", verifyToken, getUserById);
     router.put("/update-user/:id", uploadService.uploadImage(), verifyToken, updateUser);
     router.delete("/delete-user/:id", verifyToken, deleteUser);
 
-    
+
 
     //api upload va chuyen anh thanh link
     router.post('/upload-image', uploadService.uploadImage(), handleUpLoadImage)
@@ -92,6 +93,12 @@ const initWebRoute = (app) => {
     router.get("/get-promotion/:id", getPromotionById);
     router.put("/update-promotion/:id", updatePromotion);
     router.delete("/delete-promotion/:id", deletePromotion);
+
+    //api CRUD Cart
+    // router.get('/get-all-size', handleGetALLSize);
+    // router.post('/add-new-size', handleAddNewSize);
+    // router.put('/update-size/:id', handleUpdateSize);
+    // router.delete('/delete-size/:id', handleDeleteSize);
 
     return app.use("/api/", router);
 }
