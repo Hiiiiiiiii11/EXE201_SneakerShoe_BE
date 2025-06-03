@@ -3,8 +3,8 @@ import { Model } from 'sequelize';
 export default (sequelize, DataTypes) => {
     class CartItem extends Model {
         static associate(models) {
-            CartItem.belongsTo(models.Cart, { foreignKey: 'CartId' });
-            CartItem.belongsTo(models.Product, { foreignKey: 'productId' });
+            CartItem.belongsTo(models.Cart, { foreignKey: 'CartId', as: 'cart' });
+            CartItem.belongsTo(models.Product, { foreignKey: 'productId', as: 'product' });
         }
     };
     CartItem.init({

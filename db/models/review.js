@@ -24,7 +24,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        ratting: {
+        rating: {
             type: DataTypes.INTEGER,
             allowNull: true
         },

@@ -1,6 +1,7 @@
 
 import db from "../../db/models/index.js";
 
+
 const GetCartByUserId = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -8,42 +9,49 @@ const GetCartByUserId = (userId) => {
                 return resolve({
                     errCode: 1,
                     errMessage: "Missing userId"
-                })
-            } else {
-                const user = await db.User.findOne({
-                    where: { userId: userId }
-                })
-                if (user) {
-                    const response = await db.Cart.findAll({
-                        where: { userId: userId }
-                    })
-                    if (!response) {
-                        return resolve({
-                            errCode: 1,
-                            errMessage: 'No cart for this user'
-                        })
-                    } else {
-                        return resolve({
-                            errCode: 0,
-                            errMessage: "Ok",
-                            cart: response
-                        })
-                    }
-                } else {
-                    return resolve({
-                        errCode: 1,
-                        errMessage: "User is't exist"
-                    })
-                }
-
+                });
             }
+
+            const user = await db.User.findOne({ where: { userId } });
+            if (!user) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "User doesn't exist"
+                });
+            }
+
+            const cart = await db.Cart.findOne({ where: { userId } });
+            if (!cart) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "No cart found for this user"
+                });
+            }
+
+            const cartItems = await db.CartItem.findAll({
+                where: { CartId: cart.CartId },
+                include: [
+                    {
+                        model: db.Product,
+                        as: 'product' // optional: only if you define alias
+                    }
+                ]
+            });
+
+            return resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                data: cartItems
+            });
 
         } catch (e) {
             console.error(e);
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
+
+
 export default {
     GetCartByUserId
 }

@@ -1,4 +1,4 @@
-import { where } from "sequelize";
+
 import db from "../../db/models/index.js";
 
 const GetAllProduct = () => {
@@ -79,7 +79,6 @@ const CreateNewProduct = (data) => {
                 price: data.price,
                 categoryId: data.categoryId,
                 productImage: data.productImage,
-                Stock: data.Stock
             });
             resolve({
                 errCode: 0,
@@ -152,8 +151,7 @@ const UpdateProduct = (data) => {
                     product.description = data.description,
                     product.price = data.price,
                     product.categoryId = data.categoryId,
-                    product.productImage = data.productImage,
-                    product.Stock = data.Stock
+                    product.productImage = data.productImage
                 let updateProduct = await product.save();
 
                 resolve({
@@ -186,6 +184,9 @@ const GetProductById = (productId) => {
                             model: db.Category,
                             as: 'category',
                             attributes: ['categoryName'] // Chỉ lấy tên category
+                        }, {
+                            model: db.BatchDetail,
+                            as: 'batchDetails'
                         }
                     ]
                 })

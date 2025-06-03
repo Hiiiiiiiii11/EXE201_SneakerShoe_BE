@@ -73,6 +73,13 @@ module.exports = {
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
+      //Size
+      await queryInterface.createTable('Sizes', {
+        sizeId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+        sizeNumber: Sequelize.DECIMAL,
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
+      });
 
       // BatchDetails
       await queryInterface.createTable('BatchDetails', {
@@ -82,6 +89,9 @@ module.exports = {
         quantity: Sequelize.INTEGER,
         costPrice: Sequelize.DECIMAL,
         // promotionId: Sequelize.INTEGER,
+        sizeId: Sequelize.INTEGER,
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
       });
       // Products
       await queryInterface.createTable('Products', {
@@ -313,6 +323,7 @@ module.exports = {
     await queryInterface.dropTable('OrderDetails');
     await queryInterface.dropTable('Orders');
     await queryInterface.dropTable('Payments');
+    await queryInterface.dropTable('Sizes');
     await queryInterface.dropTable('BatchDetails');
     await queryInterface.dropTable('Batches');
     await queryInterface.dropTable('Promotions');

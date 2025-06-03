@@ -9,7 +9,7 @@ import uploadService from "../services/uploadService.js";
 import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductById, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBatchById, handleUpdateBatch } from "../controllers/batchController.js";
 import { handleCreateNewBatchDetail, handleDeleteBatchDetail, handleGetAllBatchDetail, handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId, handleUpdateBatchDetail } from "../controllers/batchDetailController.js";
-import { handleGetCartByUserId } from "../controllers/cartController.js";
+import { handleAddNewProductToCart, handleGetCartByUserId } from "../controllers/cartController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -84,6 +84,12 @@ const initWebRoute = (app) => {
     // router.delete('/delete-a-product-from-cart/:id', handleDeleteProductFromCart);
     // router.delete('/delete-all-product-from-cart/:id', handleDeleteAllProductFromCart);
 
+
+    //api CRUD Cart
+    // router.get('/get-all-size', handleGetALLSize);
+    // router.post('/add-new-size', handleAddNewSize);
+    // router.put('/update-size/:id', handleUpdateSize);
+    // router.delete('/delete-size/:id', handleDeleteSize);
 
     return app.use("/api/", router);
 }
