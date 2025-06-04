@@ -43,10 +43,6 @@ import productService from '../services/productService.js'
  *                         type: string
  *                         nullable: true
  *                         example: "https:..."
- *                       Stock:
- *                         type: interger
- *                         nullable: true
- *                         example: "10"
  */
 
 export const handleGetAllProduct = async (req, res) => {
@@ -85,10 +81,10 @@ export const handleGetAllProduct = async (req, res) => {
  *         required: false
  *         description: Số lượng sản phẩm mỗi trang
  *       - in: query
- *         name: categoryName
+ *         name: CategoryId
  *         schema:
- *           type: string
- *           example: "Shoe"
+ *           type: integer
+ *           example: "1"
  *         required: false
  *         description: Tên danh mục sản phẩm
  *     responses:
@@ -141,17 +137,14 @@ export const handleGetAllProduct = async (req, res) => {
  *                         type: string
  *                         nullable: true
  *                         example: "https://cloudinary.com/image.jpg"
- *                       stock:
- *                         type: integer
- *                         nullable: true
- *                         example: 10
  */
 
 export const handleGetProductByPage = async (req, res) => {
     try {
-        const { page, limit, categoryName } = req.query;
+        const { page, limit, CategoryId } = req.query;
+        console.error('check', req.query)
 
-        const response = await productService.GetProductByPage(page, limit, categoryName);
+        const response = await productService.GetProductByPage(page, limit, CategoryId);
         return res.status(200).json(response);
 
     } catch (e) {
@@ -215,10 +208,6 @@ export const handleGetProductByPage = async (req, res) => {
  *                         type: string
  *                         nullable: true
  *                         example: "https:..."
- *                       Stock:
- *                         type: interger
- *                         nullable: true
- *                         example: "10"
  */
 export const handleGetProductById = async (req, res) => {
     try {
@@ -254,8 +243,6 @@ export const handleGetProductById = async (req, res) => {
  *               price:
  *                 type: number
  *               categoryId:
- *                 type: integer
- *               stock:
  *                 type: integer
  *               image:
  *                 type: string

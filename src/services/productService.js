@@ -9,7 +9,7 @@ const GetAllProduct = () => {
                     {
                         model: db.Category,
                         as: 'category',
-                        attributes: ['categoryName'] // Chỉ lấy tên category
+                        attributes: ['CategoryId', 'categoryName'] // Chỉ lấy tên category
                     }
                 ]
             });
@@ -27,18 +27,18 @@ const GetAllProduct = () => {
 }
 
 
-const GetProductByPage = (page = 1, limit = 10, categoryName = null) => {
+const GetProductByPage = (page = 1, limit = 10, CategoryId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const offset = (page - 1) * limit;
 
-            // Tạo điều kiện lọc nếu có categoryName
+            // Tạo điều kiện lọc nếu có categoryId
             const includeQuery = {
                 model: db.Category,
                 as: 'category',
-                attributes: ['categoryName'],
-                ...(categoryName && {
-                    where: { categoryName: categoryName }
+                attributes: ['CategoryId', 'CategoryName'],
+                ...(CategoryId && {
+                    where: { CategoryId: CategoryId }
                 })
             };
 

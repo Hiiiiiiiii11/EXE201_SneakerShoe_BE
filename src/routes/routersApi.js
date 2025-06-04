@@ -9,10 +9,8 @@ import uploadService from "../services/uploadService.js";
 import { handleCreateNewProduct, handleDeleteProduct, handleGetAllProduct, handleGetProductById, handleGetProductByPage, handleUpdateProduct } from "../controllers/productController.js";
 import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBatchById, handleUpdateBatch } from "../controllers/batchController.js";
 import { handleCreateNewBatchDetail, handleDeleteBatchDetail, handleGetAllBatchDetail, handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId, handleUpdateBatchDetail } from "../controllers/batchDetailController.js";
-import { handleGetCartByUserId } from "../controllers/cartController.js";
 import { createPromotion, getAllPromotions, getPromotionById, updatePromotion, deletePromotion } from "../controllers/promotionController.js";
-
-import { handleAddNewProductToCart, handleGetCartByUserId } from "../controllers/cartController.js";
+import { handleAddNewProductToCart, handleDeleteAllProductFromCart, handleDeleteProductFromCart, handleGetCartByUserId, handleUpdateProductQuantityCart } from "../controllers/cartController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -21,11 +19,15 @@ const initWebRoute = (app) => {
     app.get('/', (req, res) => {
         res.send('Welcome to Sneaker Shoe API backend');
     });
+
+    //api upload va chuyen anh thanh link
+    router.post('/upload-image', uploadService.uploadImage(), handleUpLoadImage);
+
     //api CRUD roles
-    router.get('/get-all-roles', handleGetAllRoles);
-    router.post('/create-new-role', handleCreateNewRole);
-    router.put('/update-role/:id', handleUpdateRole);
-    router.delete('/delete-role/:id', handleDeleteRole);
+    router.get('/get-all-roles', verifyToken, handleGetAllRoles);
+    router.post('/create-new-role', verifyToken, handleCreateNewRole);
+    router.put('/update-role/:id', verifyToken, handleUpdateRole);
+    router.delete('/delete-role/:id', verifyToken, handleDeleteRole);
 
     // 📌 Auth routes
     router.post("/login", handleLogin);
@@ -46,46 +48,45 @@ const initWebRoute = (app) => {
 
 
 
-    //api upload va chuyen anh thanh link
-    router.post('/upload-image', uploadService.uploadImage(), handleUpLoadImage)
+
 
 
     //api CRUD product
     router.get('/get-all-product', handleGetAllProduct);
     router.get('/get-product-by-page', handleGetProductByPage);
     router.get('/get-product-by-id/:id', handleGetProductById);
-    router.post('/create-new-product', uploadService.uploadImage(), handleCreateNewProduct);
-    router.put('/update-product/:id', uploadService.uploadImage(), handleUpdateProduct);
-    router.delete('/delete-product/:id', handleDeleteProduct);
+    router.post('/create-new-product', uploadService.uploadImage(), verifyToken, handleCreateNewProduct);
+    router.put('/update-product/:id', uploadService.uploadImage(), verifyToken, handleUpdateProduct);
+    router.delete('/delete-product/:id', verifyToken, handleDeleteProduct);
 
     //api CRUD category
-    router.get('/get-all-category', handleGetAllCategory);
-    router.get('/get-category-by-id/:id', handleGetCategoryById);
-    router.post('/create-new-category', handleCreateNewCategory);
-    router.put('/update-category/:id', handleUpdateCategory);
-    router.delete('/delete-category/:id', handleDeleteCategory);
+    router.get('/get-all-category', verifyToken, handleGetAllCategory);
+    router.get('/get-category-by-id/:id', verifyToken, handleGetCategoryById);
+    router.post('/create-new-category', verifyToken, handleCreateNewCategory);
+    router.put('/update-category/:id', verifyToken, handleUpdateCategory);
+    router.delete('/delete-category/:id', verifyToken, handleDeleteCategory);
 
     //api CRUD batch
-    router.get('/get-all-batch', handleGetAllBatch);
-    router.get('/get-batch-by-id/:id', handleGetBatchById);
-    router.post('/create-new-batch', handleCreateNewBatch);
-    router.put('/update-batch/:id', handleUpdateBatch);
-    router.delete('/delete-batch/:id', handleDeleteBatch);
+    router.get('/get-all-batch', verifyToken, handleGetAllBatch);
+    router.get('/get-batch-by-id/:id', verifyToken, handleGetBatchById);
+    router.post('/create-new-batch', verifyToken, handleCreateNewBatch);
+    router.put('/update-batch/:id', verifyToken, handleUpdateBatch);
+    router.delete('/delete-batch/:id', verifyToken, handleDeleteBatch);
 
     //api CRUD batchDetail
-    router.get('/get-all-batchdetail', handleGetAllBatchDetail);
-    router.get('/get-batchdetail-by-batchdetailid/:id', handleGetBatchDetailByBatchDetailId);
-    router.get('/get-batchdetail-by-batchid/:id', handleGetBatchDetailByBatchId);
-    router.post('/create-new-batchdetail', handleCreateNewBatchDetail);
-    router.put('/update-batchdetail/:id', handleUpdateBatchDetail);
-    router.delete('/delete-batchdetail/:id', handleDeleteBatchDetail);
+    router.get('/get-all-batchdetail', verifyToken, handleGetAllBatchDetail);
+    router.get('/get-batchdetail-by-batchdetailid/:id', verifyToken, handleGetBatchDetailByBatchDetailId);
+    router.get('/get-batchdetail-by-batchid/:id', verifyToken, handleGetBatchDetailByBatchId);
+    router.post('/create-new-batchdetail', verifyToken, handleCreateNewBatchDetail);
+    router.put('/update-batchdetail/:id', verifyToken, handleUpdateBatchDetail);
+    router.delete('/delete-batchdetail/:id', verifyToken, handleDeleteBatchDetail);
 
     //api CRUD Cart
-    router.get('/get-cart-by-userid/:id', handleGetCartByUserId);
-    router.post('/add-new-product-to-cart', handleAddNewProductToCart);
-    // router.put('/update-product-cart/:id', handleUpdateProductCart);
-    // router.delete('/delete-a-product-from-cart/:id', handleDeleteProductFromCart);
-    // router.delete('/delete-all-product-from-cart/:id', handleDeleteAllProductFromCart);
+    router.get('/get-cart-by-userid/:id', verifyToken, handleGetCartByUserId);
+    router.post('/add-new-product-to-cart', verifyToken, handleAddNewProductToCart);
+    router.put('/update-product-quantity-cart/:id', verifyToken, handleUpdateProductQuantityCart);
+    router.delete('/delete-a-product-from-cart/:id', verifyToken, handleDeleteProductFromCart);
+    router.delete('/delete-all-product-from-cart/:id', verifyToken, handleDeleteAllProductFromCart);
 
     // API CRUD Promotions
     router.post("/create-promotion", createPromotion);
