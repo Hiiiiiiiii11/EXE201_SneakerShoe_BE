@@ -1,5 +1,4 @@
 
-import { where } from "sequelize";
 import db from "../../db/models/index.js";
 
 const GetAllCategory = () => {

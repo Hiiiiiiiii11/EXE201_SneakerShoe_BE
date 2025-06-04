@@ -13,7 +13,6 @@ dotenv.config();
 
 const app = express();
 const upload = multer();
-app.use(upload.none());
 
 // Cấu hình CORS thủ công
 app.use(function (req, res, next) {

@@ -9,32 +9,72 @@ const storage = new CloudinaryStorage({
         allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'ico', 'svg'],
         transformation: [{ width: 500, height: 500, crop: 'limit' }]
     }
+});
 
-})
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
 const uploadImage = () => {
     return (req, res, next) => {
         upload.single('image')(req, res, (err) => {
-            if (err) {
-                console.error('Upload middleware error:', err);
-                return res.status(500).json({
-                    errCode: -1,
-                    errMessage: 'Upload image failed, Image file format not allowed'
+            // Kiểm tra nếu không có file
+            if (!req.file && !err) {
+                return res.status(400).json({
+                    errCode: 1,
+                    errMessage: 'Missing required parameter: image file is required'
                 });
             }
+
+            // Xử lý lỗi
+            if (err) {
+                console.error('Upload middleware error:', err);
+                // Lỗi Unexpected end of form
+                if (err.message && err.message.includes('Unexpected end of form')) {
+                    return res.status(400).json({
+                        errCode: 5,
+                        errMessage: 'Incomplete request: Unexpected end of form'
+                    });
+                }
+                // Lỗi định dạng file không được phép
+                if (err.message && err.message.includes('format')) {
+                    return res.status(400).json({
+                        errCode: 4,
+                        errMessage: 'Image file format not allowed'
+                    });
+                }
+                // Lỗi khác từ multer
+                if (err instanceof multer.MulterError) {
+                    return res.status(400).json({
+                        errCode: 3,
+                        errMessage: 'Upload failed: ' + err.message
+                    });
+                }
+                // Lỗi server
+                return res.status(500).json({
+                    errCode: -1,
+                    errMessage: 'Upload image failed'
+                });
+            }
+
             next();
         });
     };
-}
+};
+
 const getUpLoadImageUrl = (file) => {
+    if (!file) {
+        return {
+            errCode: 1,
+            errMessage: 'Missing required parameter'
+        };
+    }
     return {
         errCode: 0,
-        errMessage: ' Upload Image success',
+        errMessage: 'Upload Image success',
         imageUrl: file.path
-    }
-}
+    };
+};
 
 export default {
-    getUpLoadImageUrl, uploadImage
+    getUpLoadImageUrl,
+    uploadImage
 };
