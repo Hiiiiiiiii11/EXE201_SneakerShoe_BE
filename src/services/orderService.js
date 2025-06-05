@@ -1,6 +1,5 @@
 
 import db from "../../db/models/index.js";
-import { createVnpayPaymentUrl } from "../utils/vnPayURL.js";
 
 const createNewOrder = (userId, ipAddr = "127.0.0.1", bankCode = "") => {
     console.error('check userId', userId)
