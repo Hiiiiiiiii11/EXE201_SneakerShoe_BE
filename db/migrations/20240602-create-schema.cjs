@@ -208,6 +208,7 @@ module.exports = {
         amount: Sequelize.DECIMAL,
         method: Sequelize.STRING,
         status: Sequelize.STRING,
+        paymentUrl: Sequelize.STRING,
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -231,9 +232,8 @@ module.exports = {
           },
           onDelete: 'SET NULL'
         },
-        orderDate: Sequelize.DATE,
         status: Sequelize.STRING,
-        totalAmount: Sequelize.DECIMAL,
+        totalPrice: Sequelize.DECIMAL,
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -258,14 +258,6 @@ module.exports = {
           onDelete: 'CASCADE'
         },
         unitPrice: Sequelize.DECIMAL,
-        batchId: {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'Batches',
-            key: 'batchId'
-          },
-          onDelete: 'CASCADE'
-        }
       });
 
       // Transactions

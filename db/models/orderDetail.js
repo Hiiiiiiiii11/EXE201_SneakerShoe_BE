@@ -32,10 +32,6 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             allowNull: true
         },
-        batchId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        }
     }, {
         sequelize,
         modelName: 'OrderDetail',
