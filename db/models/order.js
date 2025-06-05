@@ -7,6 +7,8 @@ export default (sequelize, DataTypes) => {
             Order.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
             // 1 order có nhiều order detail
             Order.hasMany(models.OrderDetail, { foreignKey: 'orderId', as: 'details' });
+            //mỗi order có thể thanh toán lại nhiều lần nếu lỗi
+            Order.hasMany(models.Payment, { foreignKey: 'orderId', as: 'payments' });
             // mỗi order thuộc về 1 payment
             Order.belongsTo(models.Payment, { foreignKey: 'paymentId', as: 'payment' });
         }
@@ -21,15 +23,11 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        orderDate: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
         status: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        totalAmount: {
+        totalPrice: {
             type: DataTypes.FLOAT,
             allowNull: true
         }
