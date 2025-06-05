@@ -4,7 +4,7 @@ export default (sequelize, DataTypes) => {
     class Size extends Model {
         static associate(models) {
             // 1 size có thể xuất hiện trong nhiều batch detail
-            Size.hasMany(models.BatchDetail, { foreignKey: 'sizeId', as: 'batchDetails' });
+            Size.hasMany(models.BatchDetail, { foreignKey: 'sizeId', as: 'batchdetails' });
         }
     };
     Size.init({

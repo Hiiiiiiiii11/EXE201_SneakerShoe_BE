@@ -9,8 +9,6 @@ export default (sequelize, DataTypes) => {
             OrderDetail.belongsTo(models.Product, { foreignKey: 'productId', as: 'product' });
             //mỗi orderdetail có 1 review
             OrderDetail.hasOne(models.Review, { foreignKey: 'orderDetailId', as: 'review' });
-            //mỗi order detail có 1 promotion
-            OrderDetail.belongsTo(models.Promotion, { foreignKey: 'promotionId', as: 'promotion' });
 
         }
     };
