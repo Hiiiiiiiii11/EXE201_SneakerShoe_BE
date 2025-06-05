@@ -37,15 +37,11 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        Stock: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        }
     }, {
         sequelize,
         modelName: 'Product',
         tableName: 'Products',
-        timestamps: false
+        timestamps: true
     });
     return Product;
 };

@@ -1,4 +1,4 @@
-import { where } from "sequelize";
+
 import db from "../../db/models/index.js";
 
 const GetAllProduct = () => {
@@ -9,11 +9,15 @@ const GetAllProduct = () => {
                     {
                         model: db.Category,
                         as: 'category',
-                        attributes: ['categoryName'] // Chỉ lấy tên category
+                        attributes: ['CategoryId', 'categoryName'] // Chỉ lấy tên category
                     }
                 ]
             });
-            resolve(product)
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                product: product
+            })
 
         } catch (e) {
             console.error(e);
@@ -23,18 +27,18 @@ const GetAllProduct = () => {
 }
 
 
-const GetProductByPage = (page = 1, limit = 10, categoryName = null) => {
+const GetProductByPage = (page = 1, limit = 10, CategoryId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const offset = (page - 1) * limit;
 
-            // Tạo điều kiện lọc nếu có categoryName
+            // Tạo điều kiện lọc nếu có categoryId
             const includeQuery = {
                 model: db.Category,
                 as: 'category',
-                attributes: ['categoryName'],
-                ...(categoryName && {
-                    where: { categoryName: categoryName }
+                attributes: ['CategoryId', 'CategoryName'],
+                ...(CategoryId && {
+                    where: { CategoryId: CategoryId }
                 })
             };
 
@@ -75,7 +79,6 @@ const CreateNewProduct = (data) => {
                 price: data.price,
                 categoryId: data.categoryId,
                 productImage: data.productImage,
-                Stock: data.Stock
             });
             resolve({
                 errCode: 0,
@@ -94,6 +97,12 @@ const CreateNewProduct = (data) => {
 const DeleteProduct = (productId) => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (!productId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing productId"
+                })
+            }
             let product = await db.Product.findOne({
                 where: { productId: productId }
             })
@@ -142,8 +151,7 @@ const UpdateProduct = (data) => {
                     product.description = data.description,
                     product.price = data.price,
                     product.categoryId = data.categoryId,
-                    product.productImage = data.productImage,
-                    product.Stock = data.Stock
+                    product.productImage = data.productImage
                 let updateProduct = await product.save();
 
                 resolve({
@@ -160,8 +168,50 @@ const UpdateProduct = (data) => {
     })
 }
 
+const GetProductById = (productId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!productId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing productId"
+                })
+            } else {
+                const response = await db.Product.findOne({
+                    where: { productId: productId },
+                    include: [
+                        {
+                            model: db.Category,
+                            as: 'category',
+                            attributes: ['categoryName'] // Chỉ lấy tên category
+                        }, {
+                            model: db.BatchDetail,
+                            as: 'batchDetails'
+                        }
+                    ]
+                })
+                if (response) {
+                    return resolve({
+                        errCode: 0,
+                        errMessage: 'OK',
+                        product: response
+                    })
+                } else {
+                    return resolve({
+                        errCode: 1,
+                        errMessage: "Product is't exist",
+                    })
+                }
 
+
+            }
+        } catch (e) {
+            console.error(e);
+            reject(e);
+        }
+    })
+}
 
 export default {
-    GetAllProduct, GetProductByPage, CreateNewProduct, DeleteProduct, UpdateProduct
+    GetAllProduct, GetProductByPage, CreateNewProduct, DeleteProduct, UpdateProduct, GetProductById
 }

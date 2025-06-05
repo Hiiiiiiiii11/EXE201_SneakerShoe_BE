@@ -4,7 +4,7 @@ export default (sequelize, DataTypes) => {
     class Promotion extends Model {
         static associate(models) {
 
-            Promotion.hasMany(models.OrderDetail, { foreignKey: 'promotionId', as: 'orderDetails' });
+            Promotion.hasMany(models.Order, { foreignKey: 'promotionId', as: 'order' });
 
         }
     };
@@ -14,7 +14,7 @@ export default (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
-        PromotionName: {
+        promotionName: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -34,7 +34,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        miniumAmount: {
+        minimumAmount: {
             type: DataTypes.FLOAT,
             allowNull: true
         }
@@ -42,7 +42,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Promotion',
         tableName: 'Promotions',
-        timestamps: false
+        timestamps: true
     });
     return Promotion;
 };

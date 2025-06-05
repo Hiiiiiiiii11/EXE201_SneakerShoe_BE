@@ -32,12 +32,16 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
+        paymentUrl: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }
 
     }, {
         sequelize,
         modelName: 'Payment',
         tableName: 'Payments',
-        timestamps: false
+        timestamps: true
     });
     return Payment;
 };

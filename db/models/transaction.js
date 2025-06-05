@@ -17,10 +17,6 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        TransactionDate: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         amount: {
             type: DataTypes.FLOAT,
             allowNull: true
@@ -37,7 +33,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Transaction',
         tableName: 'Transactions',
-        timestamps: false
+        timestamps: true
     });
     return Transaction;
 };

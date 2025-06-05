@@ -24,7 +24,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        ratting: {
+        rating: {
             type: DataTypes.INTEGER,
             allowNull: true
         },
@@ -36,7 +36,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Review',
         tableName: 'Reviews',
-        timestamps: false
+        timestamps: true
     });
     return Review;
 };

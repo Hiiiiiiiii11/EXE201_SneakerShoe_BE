@@ -5,13 +5,14 @@ import initWebRoute from "./src/routes/routersApi.js";
 import connectDB from "./config/connectDB.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
-
+import multer from "multer";
 
 
 // Load biến môi trường từ .env
 dotenv.config();
 
 const app = express();
+const upload = multer();
 
 // Cấu hình CORS thủ công
 app.use(function (req, res, next) {
@@ -44,7 +45,7 @@ if (isConnected === false) {
     app.listen(port, () => {
         console.log("✅ Connect DB successfully");
         console.log("✅ Backend NodeJs is running on the port: " + port);
-        console.log(`Swagger UI available at: ${port}`);
+        console.log(`Swagger UI available at: http://localhost:${port}/api-docs`);
     });
 }
 

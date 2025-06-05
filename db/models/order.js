@@ -6,9 +6,13 @@ export default (sequelize, DataTypes) => {
             // mỗi order thuộc về 1 user
             Order.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
             // 1 order có nhiều order detail
-            Order.hasMany(models.OrderDetail, { foreignKey: 'orderId', as: 'details' });
+            Order.hasMany(models.OrderDetail, { foreignKey: 'orderId', as: 'orderdetails' });
+            //mỗi order có thể thanh toán lại nhiều lần nếu lỗi
+            Order.hasMany(models.Payment, { foreignKey: 'orderId', as: 'payments' });
             // mỗi order thuộc về 1 payment
             Order.belongsTo(models.Payment, { foreignKey: 'paymentId', as: 'payment' });
+            //mỗi order có thể có 1 promotion
+            Order.belongsTo(models.Promotion, { foreignKey: 'promotionId', as: 'promotion' });
         }
     };
     Order.init({
@@ -21,23 +25,23 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        orderDate: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
         status: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        totalAmount: {
+        totalPrice: {
             type: DataTypes.FLOAT,
+            allowNull: true
+        },
+        promotionId: {
+            type: DataTypes.INTEGER,
             allowNull: true
         }
     }, {
         sequelize,
         modelName: 'Order',
         tableName: 'Orders',
-        timestamps: false
+        timestamps: true
     });
     return Order;
 };

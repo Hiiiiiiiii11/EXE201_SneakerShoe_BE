@@ -10,8 +10,6 @@ export default (sequelize, DataTypes) => {
             //mỗi orderdetail có 1 review
             OrderDetail.hasOne(models.Review, { foreignKey: 'orderDetailId', as: 'review' });
 
-            OrderDetail.belongsTo(models.Promotion, { foreignKey: 'promotionId', as: 'promotion' });
-
         }
     };
     OrderDetail.init({
@@ -32,10 +30,6 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             allowNull: true
         },
-        batchId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        }
     }, {
         sequelize,
         modelName: 'OrderDetail',

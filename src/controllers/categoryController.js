@@ -53,6 +53,63 @@ export const handleGetAllCategory = async (req, res) => {
 
 /**
  * @swagger
+ * /api/get-category-by-id/{id}:
+ *   get:
+ *     summary: Lấy category theo id
+ *     tags: [Category]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID của category 
+ *     responses:
+ *       200:
+ *         description: Lấy category theo id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errCode:
+ *                   type: integer
+ *                   example: 0
+ *                 errMessage:
+ *                   type: string
+ *                   example: OK
+ *                 batch:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       CategoryId:
+ *                         type: integer
+ *                         example: 1
+ *                       code:
+ *                         categoryName: string
+ *                         example: "string"
+ *                       description:
+ *                         type: string
+ *                         nullable: true
+ *                         example: "string"
+ */
+export const handleGetCategoryById = async (req, res) => {
+    try {
+        const categoryId = req.params.id
+        const response = await categoryService.GetCategoryById(categoryId);
+        return res.status(200).json(response);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: "Internal server error",
+        });
+    }
+}
+
+/**
+ * @swagger
  * /api/create-new-category:
  *   post:
  *     summary: Tạo mới category

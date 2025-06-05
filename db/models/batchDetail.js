@@ -8,6 +8,8 @@ export default (sequelize, DataTypes) => {
 
             //1 battch detail có 1 product
             BatchDetail.belongsTo(models.Product, { foreignKey: 'productId', as: 'product' });
+            // 1 batchdetail có 1 size
+            BatchDetail.belongsTo(models.Size, { foreignKey: 'sizeId', as: 'size' });
         }
     };
     BatchDetail.init({
@@ -32,16 +34,21 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             allowNull: false
         },
-        promotionId: {
+        sizeId: {
             type: DataTypes.INTEGER,
-            allowNull: true
-        }
+            allowNull: false
+        },
+
+        // promotionId: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: true
+        // }
 
     }, {
         sequelize,
         modelName: 'BatchDetail',
         tableName: 'BatchDetails',
-        timestamps: false
+        timestamps: true
     });
     return BatchDetail;
 };

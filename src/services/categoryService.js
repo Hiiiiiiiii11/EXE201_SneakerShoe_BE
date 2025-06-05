@@ -4,14 +4,53 @@ import db from "../../db/models/index.js";
 const GetAllCategory = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const roles = await db.Category.findAll();
-            resolve(roles)
+            const category = await db.Category.findAll();
+            return resolve({
+                errCode: 0,
+                errMessage: 'Ok',
+                category: category
+            })
         } catch (e) {
             console.error(e);
             reject(e)
         }
     })
 };
+
+const GetCategoryById = (categoryId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!categoryId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: 'Missing categoryId'
+                })
+            } else {
+                const response = await db.Category.findOne({
+                    where: { CategoryId: categoryId }
+                })
+                if (response) {
+                    return resolve({
+                        errCode: 0,
+                        errMessage: 'Ok',
+                        category: response
+                    })
+                } else {
+                    return resolve({
+                        errCode: 1,
+                        errMessage: "Category is't exist",
+                    })
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            reject(e);
+        }
+
+
+
+    })
+}
 const CreateNewCategory = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -62,6 +101,11 @@ const UpdateCategory = (data) => {
                     errMessage: 'Update category success',
                     category: updateCategory
                 });
+            } else {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Category is't exist",
+                });
             }
         } catch (e) {
             console.error("Error update category", e);
@@ -74,6 +118,12 @@ const DeleteACategory = (categoryId) => {
     console.error('check category deleyte ', categoryId)
     return new Promise(async (resolve, reject) => {
         try {
+            if (!categoryId) {
+                resolve({
+                    errCode: 1,
+                    message: `Mising categoryId`
+                })
+            }
             let category = await db.Category.findOne({
                 where: { categoryId: categoryId }
             })
@@ -106,5 +156,5 @@ const DeleteACategory = (categoryId) => {
 
 
 export default {
-    GetAllCategory, CreateNewCategory, UpdateCategory, DeleteACategory
+    GetAllCategory, CreateNewCategory, UpdateCategory, DeleteACategory, GetCategoryById
 }

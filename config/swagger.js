@@ -8,6 +8,20 @@ const swaggerDefinition = {
         version: '1.0.0',
         description: 'API Documentation for Sneaker Shoe Backend',
     },
+    components: {
+        securitySchemes: {
+            bearerAuth: {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT'
+            }
+        }
+    },
+    security: [
+        {
+            bearerAuth: []
+        }
+    ]
 };
 
 const options = {

@@ -22,7 +22,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Category',
         tableName: 'Categories',
-        timestamps: false
+        timestamps: true
     });
     return Category;
 };

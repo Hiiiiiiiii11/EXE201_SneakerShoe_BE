@@ -1,17 +1,15 @@
-
-import bactchService from "../services/batchService.js";
-
+import bactchDetailService from "../services/batchDetailService.js";
 
 
 /**
  * @swagger
- * /api/get-all-batch:
+ * /api/get-all-batchdetail:
  *   get:
- *     summary: Lấy tất cả lô hàng
- *     tags: [Batches]
+ *     summary: Lấy tất cả chi tiết lô hàng
+ *     tags: [BatchDetails]
  *     responses:
  *       200:
- *         description: Danh sách các lô hàng
+ *         description: Danh sách tất cả chi tiết lô hàng
  *         content:
  *           application/json:
  *             schema:
@@ -28,23 +26,21 @@ import bactchService from "../services/batchService.js";
  *                   items:
  *                     type: object
  *                     properties:
+ *                       BatchDetailId:
+ *                         type: integer
  *                       BatchId:
  *                         type: integer
- *                         example: 1
- *                       arrivalDate:
- *                         type: string
- *                         format: date
- *                         nullable: true
- *                         example: "2024-02-01"
- *                       totalCost:
- *                         type: string
- *                         nullable: true
+ *                       productId:
+ *                         type: integer
+ *                       costPrice:
+ *                         type: number
+ *                         format: decimal
  *                         example: "Tồng tiền đơn nhập hàng"
  */
-export const handleGetAllBatch = async (req, res) => {
+export const handleGetAllBatchDetail = async (req, res) => {
     try {
-        const response = await bactchService.GetAllBatch();
-        return res.status(200).json(response)
+        const response = await bactchDetailService.GetAllBatchDetail();
+        res.status(200).json(response)
 
     } catch (e) {
         console.error(e)
@@ -53,23 +49,20 @@ export const handleGetAllBatch = async (req, res) => {
             errMessage: "Internal server error",
         });
     }
-
 }
-
-
 /**
  * @swagger
- * /api/get-batch-by-id/{id}:
+ * /api/get-batchdetail-by-batchdetailid/{id}:
  *   get:
- *     summary: Lấy lô hàng theo id
- *     tags: [Batches]
+ *     summary: Lấy lô hàng theo bactch detail id
+ *     tags: [BatchDetails]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID của lô hàng
+ *         description: ID của chi tiết lô hàng
  *     responses:
  *       200:
  *         description: Lô hàng theo id
@@ -84,28 +77,32 @@ export const handleGetAllBatch = async (req, res) => {
  *                 errMessage:
  *                   type: string
  *                   example: OK
- *                 batch:
+ *                 batchDetail:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
- *                       BatchId:
+ *                       BatchDetailId:
  *                         type: integer
  *                         example: 1
- *                       arrivalDate:
- *                         type: string
- *                         format: date
- *                         nullable: true
- *                         example: "2024-02-01"
- *                       totalCost:
- *                         type: string
- *                         nullable: true
- *                         example: "Tồng tiền đơn nhập hàng"
+ *                       batchId:
+ *                         type: integer
+ *                         example: 1
+ *                       productId:
+ *                         type: integer
+ *                         example: 1
+ *                       quantity:
+ *                         type: integer
+ *                         example: 1
+ *                       costPrice:
+ *                         type: number
+ *                         format: decimal
+ *                         example: "Giá nhập hàng"
  */
-export const handleGetBatchById = async (req, res) => {
+export const handleGetBatchDetailByBatchDetailId = async (req, res) => {
     try {
-        const batchId = req.params.id;
-        const response = await bactchService.GetBatchById(batchId);
+        const batchDetailId = req.params.id;
+        const response = await bactchDetailService.GetBatchDetailByBatchDetailId(batchDetailId);
         res.status(200).json(response)
 
     } catch (e) {
@@ -118,12 +115,78 @@ export const handleGetBatchById = async (req, res) => {
 
 }
 
+
 /**
  * @swagger
- * /api/create-new-batch:
+ * /api/get-batchdetail-by-batchid/{id}:
+ *   get:
+ *     summary: Lấy chi tiết lô hàng theo batch id
+ *     tags: [BatchDetails]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID của lô hàng
+ *     responses:
+ *       200:
+ *         description: Lô hàng theo batch id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errCode:
+ *                   type: integer
+ *                   example: 0
+ *                 errMessage:
+ *                   type: string
+ *                   example: OK
+ *                 batchDetails:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       BatchDetailId:
+ *                         type: integer
+ *                         example: 1
+ *                       batchId:
+ *                         type: integer
+ *                         example: 1
+ *                       productId:
+ *                         type: integer
+ *                         example: 1
+ *                       quantity:
+ *                         type: integer
+ *                         example: 1
+ *                       costPrice:
+ *                         type: number
+ *                         format: decimal
+ *                         example: "Giá nhập hàng"
+ */
+export const handleGetBatchDetailByBatchId = async (req, res) => {
+    try {
+        const batchId = req.params.id;
+        console.error(batchId)
+        const response = await bactchDetailService.GetBatchDetailByBatchId(batchId);
+        res.status(200).json(response)
+
+    } catch (e) {
+        console.error(e)
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: "Internal server error",
+        });
+    }
+}
+
+/**
+ * @swagger
+ * /api/create-new-batchdetail:
  *   post:
- *     summary: Tạo lô hàng  mới
- *     tags: [Batches]
+ *     summary: Tạo chi tiết lô hàng mới
+ *     tags: [BatchDetails]
  *     requestBody:
  *       required: true
  *       content:
@@ -131,17 +194,23 @@ export const handleGetBatchById = async (req, res) => {
  *           schema:
  *             type: object
  *             required:
- *               - arrivalDate
- *               - totalCost
+ *               - batchId
+ *               - productId
+ *               - quantity
+ *               - costPrice
  *             properties:
- *               arrivalDate:
- *                 type: string
- *               totalCost:
+ *               batchId:
+ *                 type: integer
+ *               productId:
+ *                 type: integer
+ *               quantity:
+ *                 type: integer
+ *               costPrice:
  *                 type: number
  *                 format: decimal
  *     responses:
  *       200:
- *         description: Lô hàng được tạo thành công
+ *         description: Chi tiết lô hàng được tạo thành công
  *         content:
  *           application/json:
  *             schema:
@@ -151,20 +220,22 @@ export const handleGetBatchById = async (req, res) => {
  *                   type: integer
  *                 errMessage:
  *                   type: string
- *                 batch:
+ *                 batchDetail:
  *                   type: object
  *                   properties:
- *                     BatchId:
+ *                     BatchDetailId:
  *                       type: integer
- *                     arrivalDate:
- *                       type: string
- *                     totalCost:
+ *                     batchId:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *                     costPrice:
  *                       type: number
  *                       format: decimal
  */
-export const handleCreateNewBatch = async (req, res) => {
+export const handleCreateNewBatchDetail = async (req, res) => {
     try {
-        const response = await bactchService.CreateNewBatch(req.body);
+        const response = await bactchDetailService.CreateNewBatchDetail(req.body);
         res.status(200).json(response)
 
     } catch (e) {
@@ -176,19 +247,20 @@ export const handleCreateNewBatch = async (req, res) => {
     }
 }
 
+
 /**
  * @swagger
- * /api/update-batch/{id}:
+ * /api/update-batchdetail/{id}:
  *   put:
- *     summary: Cập nhật lô hàng theo ID
- *     tags: [Batches]
+ *     summary: Cập nhật chi tiết lô hàng theo ID
+ *     tags: [BatchDetails]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID của lô hàng cần cập nhật
+ *         description: ID của chi tiết lô hàng cần cập nhật
  *     requestBody:
  *       required: true
  *       content:
@@ -196,11 +268,13 @@ export const handleCreateNewBatch = async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               arrivalDate:
- *                 type: string
- *                 format: date
- *                 nullable: true
- *               totalCost:
+ *               batchId:
+ *                 type: integer
+ *               productId:
+ *                 type: integer
+ *               quantity:
+ *                 type: integer
+ *               costPrice:
  *                 type: number
  *                 format: decimal
  *     responses:
@@ -233,19 +307,19 @@ export const handleCreateNewBatch = async (req, res) => {
  *       500:
  *         description: Lỗi server
  */
-export const handleUpdateBatch = async (req, res) => {
+export const handleUpdateBatchDetail = async (req, res) => {
     try {
-        const id = req.params.id;
-        const data = req.body;
-
+        const id = req.params.id
+        const data = req.body
         if (!id || !data) {
             return res.status(400).json({
                 errCode: 1,
                 errMessage: "Missing required parameters",
             });
         }
-        data.batchId = id;
-        const response = await bactchService.UpdateBatch(data);
+
+        data.batchDetailId = id;
+        const response = await bactchDetailService.UpdateBatchDetail(data);
         res.status(200).json(response)
 
     } catch (e) {
@@ -257,19 +331,20 @@ export const handleUpdateBatch = async (req, res) => {
     }
 }
 
+
 /**
  * @swagger
- * /api/delete-batch/{id}:
+ * /api/delete-batchdetail/{id}:
  *   delete:
- *     summary: Xóa lô hàng theo ID
- *     tags: [Batches]
+ *     summary: Xóa chi tiết lô hàng theo ID
+ *     tags: [BatchDetails]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID của lô hàng cần xóa
+ *         description: ID của chi tiết lô hàng cần xóa
  *     responses:
  *       200:
  *         description: Xóa thành công
@@ -298,10 +373,10 @@ export const handleUpdateBatch = async (req, res) => {
  *       500:
  *         description: Lỗi server
  */
-export const handleDeleteBatch = async (req, res) => {
+export const handleDeleteBatchDetail = async (req, res) => {
     try {
-        const batchId = req.params.id;
-        const response = await bactchService.DeleteBatch(batchId);
+        const batchDetailId = req.params.id
+        const response = await bactchDetailService.DeleteBatchDetail(batchDetailId);
         res.status(200).json(response)
 
     } catch (e) {

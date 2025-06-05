@@ -5,7 +5,7 @@ export default (sequelize, DataTypes) => {
     class User extends Model {
         static associate(models) {
             //mỗi user có 1 role
-            User.hasOne(models.Role, { foreignKey: 'roleId', as: 'user' });
+            User.belongsTo(models.Role, { foreignKey: 'roleId', as: 'role' });
             // 1 user có nhiều order
             User.hasMany(models.Order, { foreignKey: 'userId', as: 'orders' });
             //1 user có nhiều review
@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
         },
         phoneNumber: DataTypes.STRING,
         address: DataTypes.STRING,
-        assignAt: DataTypes.STRING,
+        // assignAt: DataTypes.STRING,
         isActive: DataTypes.BOOLEAN,
         image: DataTypes.STRING,
         roleId: {
@@ -38,7 +38,7 @@ export default (sequelize, DataTypes) => {
         sequelize,
         modelName: 'User',
         tableName: 'Users',
-        timestamps: false // nếu bạn không dùng createdAt/updatedAt
+        timestamps: true // nếu bạn không dùng createdAt/updatedAt
     });
     return User;
 };

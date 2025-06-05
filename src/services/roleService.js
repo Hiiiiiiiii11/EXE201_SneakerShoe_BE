@@ -5,7 +5,11 @@ const GetAllRoles = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             const roles = await db.Role.findAll();
-            resolve(roles)
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                role: roles
+            })
         } catch (e) {
             console.error(e);
             throw e;
@@ -44,6 +48,12 @@ const CreateARole = async (data) => {
 const DeleteARole = (roleId) => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (!roleId) {
+                return resolve({
+                    errCode: 1,
+                    message: `Missing roleId`
+                })
+            }
             let role = await db.Role.findOne({
                 where: { roleId: roleId }
             })
