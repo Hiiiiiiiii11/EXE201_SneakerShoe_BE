@@ -11,6 +11,7 @@ import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBa
 import { handleCreateNewBatchDetail, handleDeleteBatchDetail, handleGetAllBatchDetail, handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId, handleUpdateBatchDetail } from "../controllers/batchDetailController.js";
 import { createPromotion, getAllPromotions, getPromotionById, updatePromotion, deletePromotion } from "../controllers/promotionController.js";
 import { handleAddNewProductToCart, handleDeleteAllProductFromCart, handleDeleteProductFromCart, handleGetCartByUserId, handleUpdateProductQuantityCart } from "../controllers/cartController.js";
+import { handleCreateNewOrder } from "../controllers/OrderController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -98,6 +99,13 @@ const initWebRoute = (app) => {
     //api CRUD Cart
     // router.get('/get-all-size', handleGetALLSize);
     // router.post('/add-new-size', handleAddNewSize);
+    // router.put('/update-size/:id', handleUpdateSize);
+    // router.delete('/delete-size/:id', handleDeleteSize);
+
+
+    //api CRUD Orders
+    // router.get('/get-all-order', handleGetALLOrder);
+    router.post('/create-new-order/:id', handleCreateNewOrder);
     // router.put('/update-size/:id', handleUpdateSize);
     // router.delete('/delete-size/:id', handleDeleteSize);
 
