@@ -76,7 +76,7 @@ module.exports = {
       //Size
       await queryInterface.createTable('Sizes', {
         sizeId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-        sizeNumber: Sequelize.DECIMAL,
+        sizeNumber: Sequelize.DECIMAL(4,1),
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
