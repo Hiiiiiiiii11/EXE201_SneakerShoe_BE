@@ -11,6 +11,8 @@ import { handleCreateNewBatch, handleDeleteBatch, handleGetAllBatch, handleGetBa
 import { handleCreateNewBatchDetail, handleDeleteBatchDetail, handleGetAllBatchDetail, handleGetBatchDetailByBatchDetailId, handleGetBatchDetailByBatchId, handleUpdateBatchDetail } from "../controllers/batchDetailController.js";
 import { createPromotion, getAllPromotions, getPromotionById, updatePromotion, deletePromotion } from "../controllers/promotionController.js";
 import { handleAddNewProductToCart, handleDeleteAllProductFromCart, handleDeleteProductFromCart, handleGetCartByUserId, handleUpdateProductQuantityCart } from "../controllers/cartController.js";
+import { createReview, getAllReviews, updateReview, deleteReview, getReviewsByProductId, getReviewsByUserId } from "../controllers/reviewsController.js";
+import { createSize, getAllSizes, getSizeById, updateSize, deleteSize } from "../controllers/sizeController.js";
 import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/OrderController.js";
 import { handlePayOSWebhook } from "../controllers/paymentController.js";
 let router = express.Router();
@@ -97,12 +99,20 @@ const initWebRoute = (app) => {
     router.put("/update-promotion/:id", updatePromotion);
     router.delete("/delete-promotion/:id", deletePromotion);
 
-    //api CRUD Cart
-    // router.get('/get-all-size', handleGetALLSize);
-    // router.post('/add-new-size', handleAddNewSize);
-    // router.put('/update-size/:id', handleUpdateSize);
-    // router.delete('/delete-size/:id', handleDeleteSize);
+    // API CRUD Reviews
+    router.post("/create-review", createReview);
+    router.get("/get-all-reviews", getAllReviews);
+    router.put("/update-review/:id", updateReview);
+    router.delete("/delete-review/:id", deleteReview);
+    router.get("/reviews/user/:userId", getReviewsByUserId);
+    router.get("/reviews/product/:productId", getReviewsByProductId);
 
+    //API CRUD Size
+    router.post("/create-size", createSize);
+    router.get("/get-all-sizes", getAllSizes);
+    router.get("/get-size/:id", getSizeById);
+    router.put("/update-size/:id", updateSize);
+    router.delete("/delete-size/:id", deleteSize);
 
     //api CRUD Orders
     router.get('/get-all-order', handleGetALLOrder);
