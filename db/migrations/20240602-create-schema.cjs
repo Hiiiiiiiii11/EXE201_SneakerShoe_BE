@@ -76,7 +76,7 @@ module.exports = {
       //Size
       await queryInterface.createTable('Sizes', {
         sizeId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-        sizeNumber: Sequelize.DECIMAL(4,1),
+        sizeNumber: Sequelize.DECIMAL(4, 1),
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -265,7 +265,6 @@ module.exports = {
           },
           onDelete: 'CASCADE'
         },
-        transactionDate: Sequelize.DATE,
         amount: Sequelize.DECIMAL,
         status: Sequelize.STRING,
         message: Sequelize.STRING,

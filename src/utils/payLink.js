@@ -9,7 +9,7 @@ export const generatePayOSLink = async (order) => {
 
     const paymentLink = await payOS.createPaymentLink({
         orderCode: generateOrderCode(order.OrderId),// Truyền số
-        amount: amount,
+        amount: order.totalPrice,
         description: `Thanh toán đơn hàng #${order.OrderId}`,
         returnUrl: "http://localhost:3000/payment-success", // TODO: đổi URL thực tế
         cancelUrl: "http://localhost:3000/payment-cancel",
@@ -17,7 +17,7 @@ export const generatePayOSLink = async (order) => {
             {
                 name: 'Tổng đơn hàng',
                 quantity: 1,
-                price: amount
+                price: order.totalPrice
             }
         ]
     });

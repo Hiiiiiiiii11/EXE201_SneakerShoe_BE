@@ -27,6 +27,8 @@ const PayOSWebHook = (orderId, transactionStatus) => {
                     status: 'Success',
                     message: `Thanh toán đơn hàng #${order.OrderId} thành công`
                 });
+                await payment.save();
+                await order.save();
                 return resolve({
                     errCode: 0,
                     errMessage: 'Thanh toán thành công'
@@ -40,14 +42,15 @@ const PayOSWebHook = (orderId, transactionStatus) => {
                     status: 'Failed',
                     message: `Thanh toán đơn hàng #${order.OrderId} thất bại`
                 });
+                await payment.save();
+                await order.save();
                 return resolve({
                     errCode: 0,
                     errMessage: 'Hủy thanh toán dơn hàng'
                 });
             }
 
-            await payment.save();
-            await order.save();
+
 
         } catch (e) {
             console.error(e);
