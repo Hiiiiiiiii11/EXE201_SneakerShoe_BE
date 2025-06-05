@@ -13,7 +13,8 @@ import { createPromotion, getAllPromotions, getPromotionById, updatePromotion, d
 import { handleAddNewProductToCart, handleDeleteAllProductFromCart, handleDeleteProductFromCart, handleGetCartByUserId, handleUpdateProductQuantityCart } from "../controllers/cartController.js";
 import { createReview, getAllReviews, updateReview, deleteReview, getReviewsByProductId, getReviewsByUserId } from "../controllers/reviewsController.js";
 import { createSize, getAllSizes, getSizeById, updateSize, deleteSize } from "../controllers/sizeController.js";
-import { handleCreateNewOrder } from "../controllers/OrderController.js";
+import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/OrderController.js";
+import { handlePayOSWebhook } from "../controllers/paymentController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -114,10 +115,14 @@ const initWebRoute = (app) => {
     router.delete("/delete-size/:id", deleteSize);
 
     //api CRUD Orders
-    // router.get('/get-all-order', handleGetALLOrder);
-    router.post('/create-new-order/:id', handleCreateNewOrder);
-    // router.put('/update-size/:id', handleUpdateSize);
+    router.get('/get-all-order', handleGetALLOrder);
+    router.post('/create-new-order/:id/promotion/:promotionId', handleCreateNewOrder);
+    router.get('/get-order-by-user-id/:id', handleGetOrderByUserId);
     // router.delete('/delete-size/:id', handleDeleteSize);
+
+
+    //status thanh toán 
+    router.post("/payos/payment", handlePayOSWebhook);
 
     return app.use("/api/", router);
 }

@@ -4,7 +4,7 @@ export default (sequelize, DataTypes) => {
     class Promotion extends Model {
         static associate(models) {
 
-            Promotion.hasMany(models.OrderDetail, { foreignKey: 'promotionId', as: 'orderDetails' });
+            Promotion.hasMany(models.Order, { foreignKey: 'promotionId', as: 'order' });
 
         }
     };

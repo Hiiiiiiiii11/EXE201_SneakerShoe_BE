@@ -4,7 +4,7 @@ export default (sequelize, DataTypes) => {
     class Batch extends Model {
         static associate(models) {
             //1 batch có nhiều batch detail
-            Batch.hasMany(models.BatchDetail, { foreignKey: 'batchId', as: 'details' });
+            Batch.hasMany(models.BatchDetail, { foreignKey: 'batchId', as: 'batchdetails' });
         }
     };
     Batch.init({

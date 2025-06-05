@@ -190,14 +190,6 @@ module.exports = {
         },
         quantity: Sequelize.INTEGER,
         costPrice: Sequelize.DECIMAL,
-        promotionId: {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'Promotions',
-            key: 'promotionId'
-          },
-          onDelete: 'SET NULL'
-        },
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -205,6 +197,7 @@ module.exports = {
       // Payments
       await queryInterface.createTable('Payments', {
         paymentId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+        orderId: Sequelize.INTEGER,
         amount: Sequelize.DECIMAL,
         method: Sequelize.STRING,
         status: Sequelize.STRING,
@@ -234,6 +227,7 @@ module.exports = {
         },
         status: Sequelize.STRING,
         totalPrice: Sequelize.DECIMAL,
+        promotionId: Sequelize.INTEGER,
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });

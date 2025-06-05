@@ -1,7 +1,9 @@
 
 import db from "../../db/models/index.js";
+import { generatePayOSLink } from "../utils/payLink.js";
 
-const createNewOrder = (userId, ipAddr = "127.0.0.1", bankCode = "") => {
+
+const createNewOrder = (userId, promotionId) => {
     console.error('check userId', userId)
     return new Promise(async (resolve, reject) => {
         try {
@@ -32,8 +34,9 @@ const createNewOrder = (userId, ipAddr = "127.0.0.1", bankCode = "") => {
                         const order = await db.Order.create({
                             userId,
                             totalPrice: 0,
-                            paymentMethod: "VN Pay",
-                            status: "Pending"
+                            paymentMethod: "PayOS",
+                            status: "Pending",
+                            promotionId: promotionId
                         });
                         let total = 0;
                         for (const item of cartItems) {
@@ -54,21 +57,29 @@ const createNewOrder = (userId, ipAddr = "127.0.0.1", bankCode = "") => {
 
 
 
-                        // const paymentUrl = createVnpayPaymentUrl(order.OrderId, total, ipAddr, bankCode);
-                        // console.error('check', order.OrderId, total, ipAddr, paymentUrl)
+                        const paymentUrl = await generatePayOSLink(order);
                         if (paymentUrl) {
                             resolve({
                                 errCode: 0,
                                 errMessage: "Order created success",
                                 order: order,
-                                // paymentUrl: paymentUrl
+                                paymentUrl: paymentUrl
                             })
-                            // await db.CartItem.destroy({
-                            //     where: { CartId: cart.CartId }
-                            // })
-                            // await db.Cart.destroy({
-                            //     where: { userId: cart.userId }
-                            // })
+                            await db.CartItem.destroy({
+                                where: { CartId: cart.CartId }
+                            })
+                            await db.Cart.destroy({
+                                where: { userId: cart.userId }
+                            })
+                            const payment = await db.Payment.create({
+                                orderId: order.OrderId,
+                                amount: order.totalPrice,
+                                method: 'PayOS',
+                                status: 'Pending',
+                                paymentUrl: paymentUrl
+                            });
+                            order.paymentId = payment.PaymentId;
+                            await order.save();
                         } else {
                             return resolve({
                                 errCode: 4,
@@ -86,7 +97,76 @@ const createNewOrder = (userId, ipAddr = "127.0.0.1", bankCode = "") => {
         }
     })
 }
+const GetAllOrder = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const order = await db.Order.findAll({
+                include: [
+                    {
+                        model: db.OrderDetail,
+                        as: 'orderdetails',
+
+                        include: [{
+                            model: db.Product,
+                            as: 'product',
+                        }]
+                    },
+
+                ],
+
+            })
+            resolve({
+                errCode: 0,
+                errMessage: 'OK',
+                orders: order
+            })
+
+        } catch (e) {
+            console.error(e);
+            reject(e)
+        }
+    })
+}
+const GetOrderByUserId = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!userId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing userId"
+                })
+            } else {
+                const order = await db.Order.findAll({
+                    where: { userId: userId },
+                    include: [{
+                        model: db.OrderDetail,
+                        as: 'orderdetails',
+                        include: [{
+                            model: db.Product,
+                            as: 'product',
+                        }]
+                    }]
+                })
+                if (order) {
+                    return resolve({
+                        errCode: 0,
+                        errMessage: "OK",
+                        order: order
+                    })
+                } else {
+                    return resolve({
+                        errCode: 1,
+                        errMessage: "No order for this user"
+                    })
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            reject(e)
+        }
+    })
+}
 
 export default {
-    createNewOrder
+    createNewOrder, GetAllOrder, GetOrderByUserId
 }
