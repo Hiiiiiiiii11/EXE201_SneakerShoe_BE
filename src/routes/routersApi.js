@@ -14,7 +14,7 @@ import { handleAddNewProductToCart, handleDeleteAllProductFromCart, handleDelete
 import { createReview, getAllReviews, updateReview, deleteReview, getReviewsByProductId, getReviewsByUserId } from "../controllers/reviewsController.js";
 import { createSize, getAllSizes, getSizeById, updateSize, deleteSize } from "../controllers/sizeController.js";
 import { handlePayOSWebhook } from "../controllers/paymentController.js";
-import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/OrderController.js";
+import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/orderController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
