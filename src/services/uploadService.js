@@ -13,42 +13,37 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-const uploadImage = () => {
+const uploadImage = (fieldName = 'image') => {
     return (req, res, next) => {
-        upload.single('image')(req, res, (err) => {
-            // Kiểm tra nếu không có file
+        upload.single(fieldName)(req, res, (err) => {
+              // Kiểm tra nếu không có file
             if (!req.file && !err) {
                 return res.status(400).json({
                     errCode: 1,
-                    errMessage: 'Missing required parameter: image file is required'
+                    errMessage: `Missing required parameter: ${fieldName} is required`
                 });
             }
 
-            // Xử lý lỗi
             if (err) {
                 console.error('Upload middleware error:', err);
-                // Lỗi Unexpected end of form
                 if (err.message && err.message.includes('Unexpected end of form')) {
                     return res.status(400).json({
                         errCode: 5,
                         errMessage: 'Incomplete request: Unexpected end of form'
                     });
                 }
-                // Lỗi định dạng file không được phép
                 if (err.message && err.message.includes('format')) {
                     return res.status(400).json({
                         errCode: 4,
                         errMessage: 'Image file format not allowed'
                     });
                 }
-                // Lỗi khác từ multer
                 if (err instanceof multer.MulterError) {
                     return res.status(400).json({
                         errCode: 3,
                         errMessage: 'Upload failed: ' + err.message
                     });
                 }
-                // Lỗi server
                 return res.status(500).json({
                     errCode: -1,
                     errMessage: 'Upload image failed'
@@ -59,6 +54,7 @@ const uploadImage = () => {
         });
     };
 };
+
 
 const getUpLoadImageUrl = (file) => {
     if (!file) {

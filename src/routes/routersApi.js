@@ -16,7 +16,10 @@ import { createSize, getAllSizes, getSizeById, updateSize, deleteSize } from "..
 import { handlePayOSWebhook } from "../controllers/paymentController.js";
 import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/orderController.js";
 import { handleAddProductFavorite, handleDeleteFavoriteItem, handleGetALLFavorite, handleGetFavoriteByUserId } from "../controllers/favoriteController.js";
+import { createBrand, deleteBrand, getAllBrands, getBrandById, updateBrand } from "../controllers/brandsController.js";
+
 let router = express.Router();
+
 
 const initWebRoute = (app) => {
 
@@ -42,27 +45,19 @@ const initWebRoute = (app) => {
     router.post("/customer/create-user", createUserBySelf);
     // Admin create user
     router.post("/admin/create-user", verifyToken, isAdmin, createUserByAdmin);
-    //api CRUD users
-    //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
-    // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
-    // Authorization: `Bearer ${token}`
-    router.get("/get-all-users", verifyToken, isAdmin, getAllUsers);
-    router.get("/get-user-detail/:id", verifyToken, getUserById);
-    router.put("/update-user/:id", uploadService.uploadImage(), verifyToken, updateUser);
+    //api CRUD users 
+    router.get("/get-all-users", getAllUsers);
+    router.get("/get-user-detail/:id",  getUserById);
+    router.put("/update-user/:id", uploadService.uploadImage('userAvatar'),updateUser);
     router.delete("/delete-user/:id", verifyToken, deleteUser);
-
-
-
-
-
 
     //api CRUD product
     router.get('/get-all-product', handleGetAllProduct);
     router.get('/get-product-by-page', handleGetProductByPage);
     router.get('/get-product-by-id/:id', handleGetProductById);
-    router.post('/create-new-product', uploadService.uploadImage(), verifyToken, handleCreateNewProduct);
-    router.put('/update-product/:id', uploadService.uploadImage(), verifyToken, handleUpdateProduct);
-    router.delete('/delete-product/:id', verifyToken, handleDeleteProduct);
+    router.post('/create-new-product', uploadService.uploadImage('productImage'),  handleCreateNewProduct);
+    router.put('/update-product/:id', uploadService.uploadImage('productImage'),  handleUpdateProduct);
+    router.delete('/delete-product/:id', handleDeleteProduct);
 
     //api CRUD category
     router.get('/get-all-category', verifyToken, handleGetAllCategory);
@@ -114,6 +109,13 @@ const initWebRoute = (app) => {
     router.get("/get-size/:id", getSizeById);
     router.put("/update-size/:id", updateSize);
     router.delete("/delete-size/:id", deleteSize);
+
+    //API CRUD Brands
+    router.get('/get-all-brands', getAllBrands);
+    router.get('/get-brand-by-id/:id', getBrandById);
+    router.post('/create-new-brand', uploadService.uploadImage('brandLogo'), createBrand);
+    router.put('/update-brand/:id', uploadService.uploadImage('brandLogo'), updateBrand);
+    router.delete('/delete-brand/:id', deleteBrand);
 
     //api CRUD Orders
     router.get('/get-all-order', handleGetALLOrder);

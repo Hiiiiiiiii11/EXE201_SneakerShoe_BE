@@ -1,53 +1,43 @@
-
 import db from "../../db/models/index.js";
 
 const GetAllProduct = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const product = await db.Product.findAll({
-                include: [
-                    {
-                        model: db.Category,
-                        as: 'category',
-                        attributes: ['CategoryId', 'categoryName'] // Chỉ lấy tên category
-                    }
-                ]
+                attributes: ['productId', 'productName', 'price', 'brandId', 'productImage']
             });
             resolve({
                 errCode: 0,
                 errMessage: 'OK',
                 product: product
-            })
+            });
 
         } catch (e) {
             console.error(e);
-            reject(e)
+            reject(e);
         }
-    })
-}
-
+    });
+};
 
 const GetProductByPage = (page = 1, limit = 10, CategoryId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const offset = (page - 1) * limit;
-
-            // Tạo điều kiện lọc nếu có categoryId
-            const includeQuery = {
-                model: db.Category,
-                as: 'category',
-                attributes: ['CategoryId', 'CategoryName'],
-                ...(CategoryId && {
-                    where: { CategoryId: CategoryId }
-                })
-            };
+            const whereCondition = CategoryId ? { categoryId: CategoryId } : {};
 
             const products = await db.Product.findAndCountAll({
-                include: [includeQuery],
+                where: whereCondition,
                 limit: +limit,
                 offset: +offset,
-                distinct: true, // Đảm bảo count chính xác khi join
-                order: [['ProductId', 'ASC']]
+                distinct: true,
+                order: [['ProductId', 'ASC']],
+                include: [
+                    {
+                        model: db.Category,
+                        as: 'category',
+                        attributes: ['CategoryId', 'categoryName']
+                    }
+                ]
             });
 
             resolve({
@@ -64,35 +54,44 @@ const GetProductByPage = (page = 1, limit = 10, CategoryId) => {
         }
     });
 };
+
 const CreateNewProduct = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.productName || !data.price || !data.categoryId || !data.productImage) {
+            if (!data.productName || !data.price || !data.categoryId || !data.brandId || !data.productImage) {
                 return resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameter'
-                })
+                });
             }
+
+            const category = await db.Category.findByPk(data.categoryId);
+            if (!category) return resolve({ errCode: 2, errMessage: 'Category does not exist' });
+
+            const brand = await db.Brand.findByPk(data.brandId);
+            if (!brand) return resolve({ errCode: 3, errMessage: 'Brand does not exist' });
+
             let newProduct = await db.Product.create({
                 productName: data.productName,
                 description: data.description,
                 price: data.price,
                 categoryId: data.categoryId,
-                productImage: data.productImage,
+                brandId: data.brandId,
+                productImage: data.productImage
             });
+
             resolve({
                 errCode: 0,
                 errMessage: "Ok",
-                product: newProduct // Trả về thông tin role vừa tạo
+                product: newProduct
             });
 
         } catch (e) {
             console.error(e);
             reject(e);
         }
-    })
-}
-
+    });
+};
 
 const DeleteProduct = (productId) => {
     return new Promise(async (resolve, reject) => {
@@ -101,33 +100,35 @@ const DeleteProduct = (productId) => {
                 return resolve({
                     errCode: 1,
                     errMessage: "Missing productId"
-                })
+                });
             }
+
             let product = await db.Product.findOne({
                 where: { productId: productId }
-            })
+            });
+
             if (!product) {
                 return resolve({
                     errCode: 1,
-                    errMessage: "The product is't exist"
-                })
+                    errMessage: "The product isn't exist"
+                });
             } else {
                 await db.Product.destroy({
                     where: { productId: productId }
-                })
+                });
+
                 resolve({
                     errCode: 0,
                     errMessage: 'Delete product success'
-                })
+                });
             }
 
         } catch (e) {
             console.error(e);
-            reject(e)
+            reject(e);
         }
-    })
-}
-
+    });
+};
 
 const UpdateProduct = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -136,37 +137,59 @@ const UpdateProduct = (data) => {
                 return resolve({
                     errCode: 1,
                     errMessage: 'Missing product Id'
-                })
+                });
             }
+
             let product = await db.Product.findOne({
                 where: { productId: data.productId }
-            })
+            });
+
             if (!product) {
                 return resolve({
                     errCode: 1,
-                    errMessage: "The product is't exist'"
-                })
-            } else {
-                product.productName = data.productName,
-                    product.description = data.description,
-                    product.price = data.price,
-                    product.categoryId = data.categoryId,
-                    product.productImage = data.productImage
-                let updateProduct = await product.save();
-
-                resolve({
-                    errCode: 0,
-                    errMessage: 'Update product success',
-                    product: updateProduct
+                    errMessage: "The product isn't exist"
                 });
             }
+
+
+              // Ép kiểu categoryId và brandId nếu bị rỗng string
+            data.categoryId = data.categoryId === '' ? undefined : data.categoryId;
+            data.brandId = data.brandId === '' ? undefined : data.brandId;
+
+            // Kiểm tra khóa ngoại tồn tại
+            if (data.categoryId) {
+                const category = await db.Category.findByPk(data.categoryId);
+                if (!category) return resolve({ errCode: 2, errMessage: 'Category does not exist' });
+            }
+
+            if (data.brandId) {
+                const brand = await db.Brand.findByPk(data.brandId);
+                if (!brand) return resolve({ errCode: 3, errMessage: 'Brand does not exist' });
+            }
+
+        
+
+            product.productName = data.productName ?? product.productName;
+            product.description = data.description ?? product.description;
+            product.price = data.price ?? product.price;
+            product.categoryId = data.categoryId ?? product.categoryId;
+            product.brandId = data.brandId ?? product.brandId;
+            product.productImage = data.productImage ?? product.productImage;
+
+            let updateProduct = await product.save();
+
+            resolve({
+                errCode: 0,
+                errMessage: 'Update product success',
+                product: updateProduct
+            });
 
         } catch (e) {
             console.error(e);
             reject(e);
         }
-    })
-}
+    });
+};
 
 const GetProductById = (productId) => {
     return new Promise(async (resolve, reject) => {
@@ -175,43 +198,54 @@ const GetProductById = (productId) => {
                 return resolve({
                     errCode: 1,
                     errMessage: "Missing productId"
-                })
-            } else {
-                const response = await db.Product.findOne({
-                    where: { productId: productId },
-                    include: [
-                        {
-                            model: db.Category,
-                            as: 'category',
-                            attributes: ['categoryName'] // Chỉ lấy tên category
-                        }, {
-                            model: db.BatchDetail,
-                            as: 'batchDetails'
-                        }
-                    ]
-                })
-                if (response) {
-                    return resolve({
-                        errCode: 0,
-                        errMessage: 'OK',
-                        product: response
-                    })
-                } else {
-                    return resolve({
-                        errCode: 1,
-                        errMessage: "Product is't exist",
-                    })
-                }
-
-
+                });
             }
+
+            const response = await db.Product.findOne({
+                where: { productId: productId },
+                include: [
+                    {
+                        model: db.Category,
+                        as: 'category',
+                        attributes: ['categoryName']
+                    },
+                    {
+                        model: db.BatchDetail,
+                        as: 'batchDetails'
+                    },
+                    {
+                        model: db.Brand,
+                        as: 'brand',
+                        attributes: ['brandName']
+                    }
+                ]
+            });
+
+            if (response) {
+                return resolve({
+                    errCode: 0,
+                    errMessage: 'OK',
+                    product: response
+                });
+            } else {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Product isn't exist"
+                });
+            }
+
         } catch (e) {
             console.error(e);
             reject(e);
         }
-    })
-}
+    });
+};
 
 export default {
-    GetAllProduct, GetProductByPage, CreateNewProduct, DeleteProduct, UpdateProduct, GetProductById
-}
+    GetAllProduct,
+    GetProductByPage,
+    CreateNewProduct,
+    DeleteProduct,
+    UpdateProduct,
+    GetProductById
+};
