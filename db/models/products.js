@@ -9,6 +9,8 @@ export default (sequelize, DataTypes) => {
             Product.hasMany(models.BatchDetail, { foreignKey: 'productId', as: 'batchDetails' });
             //1 product có thể xuất hiện trong nhiều orderdetail
             Product.hasMany(models.OrderDetail, { foreignKey: 'productId', as: 'orderDetails' });
+            // mỗi product thuộc 1 brand
+            Product.belongsTo(models.Brand, { foreignKey: 'brandId', as: 'brand' });
         }
     };
     Product.init({
@@ -33,8 +35,16 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        productDetailImg: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         productImage: {
             type: DataTypes.STRING,
+            allowNull: true
+        },
+        brandId: {
+            type: DataTypes.INTEGER,
             allowNull: true
         },
     }, {

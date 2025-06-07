@@ -65,14 +65,6 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
-      // Batches
-      await queryInterface.createTable('Batches', {
-        batchId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-        arrivalDate: Sequelize.DATE,
-        totalCost: Sequelize.DECIMAL,
-        createdAt: Sequelize.DATE,
-        updatedAt: Sequelize.DATE
-      });
       //Size
       await queryInterface.createTable('Sizes', {
         sizeId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -81,18 +73,16 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
-      // BatchDetails
-      await queryInterface.createTable('BatchDetails', {
-        batchDetailId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-        batchId: Sequelize.INTEGER,
-        productId: Sequelize.INTEGER,
-        quantity: Sequelize.INTEGER,
-        costPrice: Sequelize.DECIMAL,
-        // promotionId: Sequelize.INTEGER,
-        sizeId: Sequelize.INTEGER,
+      // Brands
+      await queryInterface.createTable('Brands', {
+        brandId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+        brandName: Sequelize.STRING,
+        brandLogo: Sequelize.STRING,
+        description: Sequelize.STRING,
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
+
       // Products
       await queryInterface.createTable('Products', {
         productId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -108,7 +98,13 @@ module.exports = {
           onDelete: 'CASCADE'
         },
         productImage: Sequelize.STRING,
-        Stock: Sequelize.INTEGER,
+        productDetailImg: Sequelize.STRING,
+        brandId: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+          references: { model: 'Brands', key: 'brandId' },
+          onDelete: 'SET NULL'
+        },
 
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
@@ -309,6 +305,7 @@ module.exports = {
     await queryInterface.dropTable('Orders');
     await queryInterface.dropTable('Payments');
     await queryInterface.dropTable('Sizes');
+    await queryInterface.dropTable('Brands');
     await queryInterface.dropTable('BatchDetails');
     await queryInterface.dropTable('Batches');
     await queryInterface.dropTable('Promotions');
