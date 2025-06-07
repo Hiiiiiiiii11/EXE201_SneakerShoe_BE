@@ -13,8 +13,9 @@ import { createPromotion, getAllPromotions, getPromotionById, updatePromotion, d
 import { handleAddNewProductToCart, handleDeleteAllProductFromCart, handleDeleteProductFromCart, handleGetCartByUserId, handleUpdateProductQuantityCart } from "../controllers/cartController.js";
 import { createReview, getAllReviews, updateReview, deleteReview, getReviewsByProductId, getReviewsByUserId } from "../controllers/reviewsController.js";
 import { createSize, getAllSizes, getSizeById, updateSize, deleteSize } from "../controllers/sizeController.js";
-import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/OrderController.js";
 import { handlePayOSWebhook } from "../controllers/paymentController.js";
+import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/orderController.js";
+import { handleAddProductFavorite, handleDeleteFavoriteItem, handleGetALLFavorite, handleGetFavoriteByUserId } from "../controllers/favoriteController.js";
 let router = express.Router();
 
 const initWebRoute = (app) => {
@@ -120,6 +121,11 @@ const initWebRoute = (app) => {
     router.get('/get-order-by-user-id/:id', handleGetOrderByUserId);
     // router.delete('/delete-size/:id', handleDeleteSize);
 
+    //api CRUD favorite
+    router.get('/get-all-favorite', handleGetALLFavorite);
+    router.get('/get-favorite-item-by-user-id/:id', handleGetFavoriteByUserId);
+    router.post('/add-product-to-favorite/:id', handleAddProductFavorite);
+    router.delete('/delete-favorite-item/:id', handleDeleteFavoriteItem);
 
     //status thanh toán 
     router.post("/payos/payment", handlePayOSWebhook);

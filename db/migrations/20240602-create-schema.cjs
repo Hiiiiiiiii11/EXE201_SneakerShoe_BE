@@ -110,6 +110,56 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
+      //Favorite
+      await queryInterface.createTable('Favorites', {
+        favoriteId: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        userId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          unique: true, // mỗi user chỉ có 1 Favorite
+          references: {
+            model: 'Users',
+            key: 'userId'
+          },
+          onDelete: 'CASCADE'
+        },
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
+      });
+
+      //FavoriteItem
+      await queryInterface.createTable('FavoriteItems', {
+        favoriteItemId: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        favoriteId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Favorites',
+            key: 'favoriteId'
+          },
+          onDelete: 'CASCADE'
+        },
+        productId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Products',
+            key: 'productId'
+          },
+          onDelete: 'CASCADE'
+        },
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
+      });
+
       //Cart Item
       await queryInterface.createTable('CartItems', {
         CartItemId: {
@@ -313,6 +363,8 @@ module.exports = {
     await queryInterface.dropTable('Categories');
     await queryInterface.dropTable('CartItems');
     await queryInterface.dropTable('Carts');
+    await queryInterface.dropTable('FavoriteItems');
+    await queryInterface.dropTable('Favorites');
     await queryInterface.dropTable('Users');
     await queryInterface.dropTable('Roles');
   }

@@ -10,6 +10,8 @@ export default (sequelize, DataTypes) => {
             User.hasMany(models.Order, { foreignKey: 'userId', as: 'orders' });
             //1 user có nhiều review
             User.hasMany(models.Review, { foreignKey: 'userId', as: 'reviews' });
+            //1 user có 1 favorite
+            User.hasOne(models.Favorite, { foreignKey: 'userId', as: 'favorite' });
         }
     };
     User.init({
