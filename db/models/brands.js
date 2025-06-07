@@ -1,6 +1,17 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
-  const Brand = sequelize.define('Brand', {
+import { Model, DataTypes } from 'sequelize';
+
+export default (sequelize) => {
+  class Brand extends Model {
+    static associate(models) {
+      Brand.hasMany(models.Product, {
+        foreignKey: 'brandId',
+        as: 'products'
+      });
+    }
+  }
+
+  Brand.init({
     brandId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -10,16 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     brandLogo: DataTypes.STRING,
     description: DataTypes.STRING
   }, {
+    sequelize,
+    modelName: 'Brand',
     tableName: 'Brands',
     timestamps: true
   });
-
-  Brand.associate = function(models) {
-    Brand.hasMany(models.Product, {
-      foreignKey: 'brandId',
-      as: 'products'
-    });
-  };
 
   return Brand;
 };
