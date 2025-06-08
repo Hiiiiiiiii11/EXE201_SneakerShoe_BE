@@ -1,157 +1,100 @@
-import { where } from "sequelize";
-import db from "../../db/models/index.js";
 import bcrypt from "bcrypt";
-
-
-
-
+import db from "../../db/models/index.js";
 
 const createUserSelf = async (data) => {
-  try {
-    // Kiểm tra email đã tồn tại chưa
-    const existingUser = await db.User.findOne({ where: { email: data.email } });
-    if (existingUser) {
-      return { errCode: 2, errMessage: "Email đã được sử dụng" };
-    }
-
-    const role = await db.Role.findOne({ where: { code: 'CUSTOMER' } });
-    if (!role) return { errCode: 1, errMessage: "Role CUSTOMER not found" };
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(data.password, salt);
-
-    const newUser = await db.User.create({
-      ...data,
-      password: hashedPassword,
-      roleId: role.roleId
-    });
-
-    return {
-      errCode: 0,
-      errMessage: "Register success",
-      user: newUser
-    };
-  } catch (e) {
-    console.error("🔥 createUserSelf error:", e);
-    throw e;
+  const existingUser = await db.User.findOne({ where: { email: data.email } });
+  if (existingUser) {
+    return { errCode: 2, errMessage: "Email đã được sử dụng" };
   }
+
+  const role = await db.Role.findOne({ where: { code: 'CUSTOMER' } });
+  if (!role) return { errCode: 1, errMessage: "Role CUSTOMER not found" };
+
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const newUser = await db.User.create({
+    ...data,
+    password: hashedPassword,
+    roleId: role.roleId
+  });
+
+  const { password, ...safeUser } = newUser.dataValues;
+  return {
+    errCode: 0,
+    errMessage: "Register success",
+    user: safeUser
+  };
 };
 
 const createUserByAdmin = async (data) => {
+  if (!data.roleId) return { errCode: 2, errMessage: 'Missing roleId' };
+  const role = await db.Role.findByPk(data.roleId);
+  if (!role) return { errCode: 1, errMessage: "Role not found" };
 
-  console.error("check", data)
-  try {
-    const salt = await bcrypt.genSalt(10);
-    const role = await db.Role.findOne({ where: { code: 'STAFF' } });
-    if (!role) return { errCode: 1, errMessage: "Role STAFF not found" };
-    const hashedPassword = await bcrypt.hash(data.password, salt);
-    const newUser = await db.User.create({
-      ...data,
-      password: hashedPassword,
-      roleId: role.roleId
-    });
-
-    return {
-      errCode: 0,
-      errMessage: "User created by admin successfully",
-      user: newUser
-    };
-  } catch (error) {
-    console.error("Error creating user by admin:", error);
-    throw error;
-  }
-};
-
-const getAllUsers = async () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await db.User.findAll();
-      if (response) {
-        return resolve({
-          errCode: 0,
-          errMessage: 'OK',
-          user: response
-        })
-      }
-    } catch (e) {
-      console.error(e);
-      reject(e);
-
-    }
-
-  })
-
-};
-
-// const getUserById = async (id) => {
-//   return await db.User.findByPk(id, { include: { model: db.Role, as: 'role' } });
-// };
-const getUserById = async (id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await db.User.findOne({
-        where: { userId: id }, include: { model: db.Role, as: 'role' }
-      });
-      if (response) {
-        return resolve({
-          errCode: 0,
-          errMessage: 'OK',
-          user: response
-        })
-      } else {
-        return resolve({
-          errCode: 0,
-          errMessage: "User is't exist",
-
-        })
-      }
-    } catch (e) {
-      console.error(e);
-      reject(e);
-
-    }
-
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const newUser = await db.User.create({
+    ...data,
+    password: hashedPassword
   });
-}
 
+  const { password, ...safeUser } = newUser.dataValues;
+  return {
+    errCode: 0,
+    errMessage: "User created by admin successfully",
+    user: safeUser
+  };
+};
+
+const getAllUsers = async (options = {}) => {
+  const users = await db.User.findAll(options);
+  return {
+    errCode: 0,
+    errMessage: 'OK',
+    users
+  };
+};
+
+const getUserById = async (id) => {
+  const user = await db.User.findOne({
+    where: { userId: id },
+    include: { model: db.Role, as: 'role' }
+  });
+  if (!user) {
+    return { errCode: 1, errMessage: "User not found" };
+  }
+  const { password, ...safeUser } = user.dataValues;
+  return {
+    errCode: 0,
+    errMessage: 'OK',
+    user: safeUser
+  };
+};
 
 const updateUser = async (id, data) => {
-  try {
-    const user = await db.User.findByPk(id);
-    if (!user) return { errCode: 1, errMessage: "User not found" };
+  const user = await db.User.findByPk(id);
+  if (!user) return { errCode: 1, errMessage: "User not found" };
 
-    await user.update(data);
-
-    return {
-      errCode: 0,
-      errMessage: "User updated successfully",
-      user
-    };
-  } catch (error) {
-    throw error;
+  if (data.password) {
+    data.password = await bcrypt.hash(data.password, 10);
   }
+
+  await user.update(data);
+  const { password, ...safeUser } = user.dataValues;
+  return {
+    errCode: 0,
+    errMessage: "User updated successfully",
+    user: safeUser
+  };
 };
 
-const deleteUser = (id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const user = await db.User.findByPk(id);
-      if (!user) return resolve({
-        errCode: 1,
-        errMessage: "User not found"
-      });
-      await user.destroy();
-      return resolve({
-        errCode: 0,
-        errMessage: "User deleted successfully"
-      });
-    } catch (e) {
-      console.error(e)
-      reject(e);
-    }
-  });
-}
-
+const deleteUser = async (id) => {
+  const user = await db.User.findByPk(id);
+  if (!user) return { errCode: 1, errMessage: "User not found" };
+  await user.destroy();
+  return {
+    errCode: 0,
+    errMessage: "User deleted successfully"
+  };
+};
 
 export default {
   createUserSelf,

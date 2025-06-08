@@ -2,6 +2,13 @@ import userService from "../services/userService.js";
 
 /**
  * @swagger
+ * tags:
+ *   name: User
+ *   description: Quản lý người dùng
+ */
+
+/**
+ * @swagger
  * /api/customer/create-user:
  *   post:
  *     summary: Người dùng tự đăng ký (role mặc định là CUSTOMER)
@@ -37,7 +44,6 @@ import userService from "../services/userService.js";
 export const createUserBySelf = async (req, res) => {
   try {
     const data = req.body;
-    console.error('check request', req.body)
     const response = await userService.createUserSelf(data);
     return res.status(200).json(response);
   } catch (e) {
@@ -45,7 +51,6 @@ export const createUserBySelf = async (req, res) => {
     return res.status(500).json({ errCode: -1, errMessage: "Internal error" });
   }
 };
-
 
 /**
  * @swagger
@@ -84,10 +89,8 @@ export const createUserBySelf = async (req, res) => {
  *       200:
  *         description: Tạo tài khoản thành công
  */
-
 export const createUserByAdmin = async (req, res) => {
   try {
-    console.error('check request', req.body)
     const result = await userService.createUserByAdmin(req.body);
     return res.status(200).json(result);
   } catch (e) {
@@ -100,7 +103,7 @@ export const createUserByAdmin = async (req, res) => {
  * @swagger
  * /api/get-all-users:
  *   get:
- *     summary: Lấy danh sách người dùng
+ *     summary: Lấy danh sách người dùng (chỉ gồm tên và email)
  *     tags: [User]
  *     security:
  *       - bearerAuth: []
@@ -110,7 +113,9 @@ export const createUserByAdmin = async (req, res) => {
  */
 export const getAllUsers = async (req, res) => {
   try {
-    const result = await userService.getAllUsers();
+    const result = await userService.getAllUsers({
+      attributes: ['userId', 'firstName', 'lastName', 'email']
+    });
     return res.status(200).json(result);
   } catch (e) {
     console.error(e);
@@ -122,7 +127,7 @@ export const getAllUsers = async (req, res) => {
  * @swagger
  * /api/get-user-detail/{id}:
  *   get:
- *     summary: Lấy thông tin người dùng theo ID
+ *     summary: Lấy thông tin người dùng theo ID (đầy đủ)
  *     tags: [User]
  *     security:
  *       - bearerAuth: []
@@ -150,7 +155,7 @@ export const getUserById = async (req, res) => {
  * @swagger
  * /api/update-user/{id}:
  *   put:
- *     summary: Cập nhật thông tin người dùng
+ *     summary: Cập nhật thông tin người dùng (có thể cập nhật ảnh đại diện)
  *     tags: [User]
  *     security:
  *       - bearerAuth: []
@@ -160,6 +165,7 @@ export const getUserById = async (req, res) => {
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID người dùng
  *     requestBody:
  *       required: true
  *       content:
@@ -175,21 +181,21 @@ export const getUserById = async (req, res) => {
  *                 type: string
  *               address:
  *                 type: string
- *               image:
+ *               userAvatar:
  *                 type: string
  *                 format: binary
+ *                 description: Có thể bỏ qua nếu không cập nhật ảnh
  *     responses:
  *       200:
  *         description: Cập nhật thành công
  */
 export const updateUser = async (req, res) => {
   try {
-    const data = req.body;
     const userId = req.params.id;
-    if (req.file && req.file.path) {
+    const data = req.body;
+    if (req.file?.path) {
       data.image = req.file.path;
     }
-    data.userId = userId;
     const result = await userService.updateUser(userId, data);
     return res.status(200).json(result);
   } catch (e) {
@@ -197,7 +203,6 @@ export const updateUser = async (req, res) => {
     return res.status(500).json({ errCode: -1, errMessage: "Internal error" });
   }
 };
-
 
 /**
  * @swagger
@@ -219,7 +224,8 @@ export const updateUser = async (req, res) => {
  */
 export const deleteUser = async (req, res) => {
   try {
-    const result = await userService.deleteUser(req.params.id);
+    const brandId = req.params.id
+    const result = await userService.deleteUser(brandId);
     return res.status(200).json(result);
   } catch (e) {
     console.error(e);

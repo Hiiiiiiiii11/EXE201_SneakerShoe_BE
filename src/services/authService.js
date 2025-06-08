@@ -15,10 +15,15 @@ const loginWithEmail = async (email, password) => {
   }
 
   const user = await db.User.findOne({ where: { email } });
-  if (!user) return { errCode: 2, errMessage: "User not found" };
+  if (!user) return { errCode: 2, errMessage: "User không tồn tại" };
+
+  // ✅ Kiểm tra tài khoản bị khóa hoặc không hoạt động
+  if (user.isActive === false) {
+    return { errCode: 4, errMessage: "Tài khoản đang bị khóa hoặc chưa kích hoạt" };
+  }
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return { errCode: 3, errMessage: "Wrong password" };
+  if (!isMatch) return { errCode: 3, errMessage: "Sai mật khẩu" };
 
   const token = jwt.sign({ id: user.userId, roleId: user.roleId }, JWT_SECRET, { expiresIn: "1d" });
 
@@ -30,6 +35,7 @@ const loginWithGoogle = async (tokenId) => {
     idToken: tokenId,
     audience: process.env.GOOGLE_CLIENT_ID
   });
+
   const payload = ticket.getPayload();
   const { email, given_name, family_name, picture } = payload;
 
@@ -38,13 +44,19 @@ const loginWithGoogle = async (tokenId) => {
   }
 
   let user = await db.User.findOne({ where: { email } });
-  if (!user) {
+
+  if (user) {
+    // ✅ Kiểm tra trạng thái nếu tài khoản đã tồn tại
+    if (user.isActive === false) {
+      return { errCode: 4, errMessage: "Tài khoản Google này đã bị khóa" };
+    }
+  } else {
     const role = await db.Role.findOne({ where: { code: "CUSTOMER" } });
     user = await db.User.create({
       firstName: given_name,
       lastName: family_name,
       email,
-      image: picture, // lưu avatar Google
+      image: picture,
       password: null,
       roleId: role.roleId,
       isActive: true

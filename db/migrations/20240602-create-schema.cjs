@@ -21,7 +21,6 @@ module.exports = {
         email: { type: Sequelize.STRING, unique: true },
         phoneNumber: Sequelize.STRING,
         address: Sequelize.STRING,
-        // assignAt: Sequelize.DATE,
         isActive: Sequelize.BOOLEAN,
         image: Sequelize.STRING,
         roleId: {
@@ -36,13 +35,9 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
-      //Cart
+      // Carts
       await queryInterface.createTable('Carts', {
-        CartId: {
-          type: Sequelize.INTEGER,
-          autoIncrement: true,
-          primaryKey: true
-        },
+        CartId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         userId: {
           type: Sequelize.INTEGER,
           allowNull: false,
@@ -65,15 +60,7 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
-      // Batches
-      await queryInterface.createTable('Batches', {
-        batchId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-        arrivalDate: Sequelize.DATE,
-        totalCost: Sequelize.DECIMAL,
-        createdAt: Sequelize.DATE,
-        updatedAt: Sequelize.DATE
-      });
-      //Size
+      // Sizes
       await queryInterface.createTable('Sizes', {
         sizeId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         sizeNumber: Sequelize.DECIMAL(4, 1),
@@ -81,18 +68,16 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
-      // BatchDetails
-      await queryInterface.createTable('BatchDetails', {
-        batchDetailId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-        batchId: Sequelize.INTEGER,
-        productId: Sequelize.INTEGER,
-        quantity: Sequelize.INTEGER,
-        costPrice: Sequelize.DECIMAL,
-        // promotionId: Sequelize.INTEGER,
-        sizeId: Sequelize.INTEGER,
+      // Brands
+      await queryInterface.createTable('Brands', {
+        brandId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+        brandName: Sequelize.STRING,
+        brandLogo: Sequelize.STRING,
+        description: Sequelize.STRING,
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
+
       // Products
       await queryInterface.createTable('Products', {
         productId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -108,19 +93,65 @@ module.exports = {
           onDelete: 'CASCADE'
         },
         productImage: Sequelize.STRING,
-        Stock: Sequelize.INTEGER,
-
+        productDetailImg: Sequelize.JSON,
+        brandId: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+          references: {
+            model: 'Brands',
+            key: 'brandId'
+          },
+          onDelete: 'SET NULL'
+        },
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
 
-      //Cart Item
-      await queryInterface.createTable('CartItems', {
-        CartItemId: {
+      // Favorites
+      await queryInterface.createTable('Favorites', {
+        favoriteId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+        userId: {
           type: Sequelize.INTEGER,
-          autoIncrement: true,
-          primaryKey: true
+          allowNull: false,
+          unique: true,
+          references: {
+            model: 'Users',
+            key: 'userId'
+          },
+          onDelete: 'CASCADE'
         },
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
+      });
+
+      // FavoriteItems
+      await queryInterface.createTable('FavoriteItems', {
+        favoriteItemId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+        favoriteId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Favorites',
+            key: 'favoriteId'
+          },
+          onDelete: 'CASCADE'
+        },
+        productId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Products',
+            key: 'productId'
+          },
+          onDelete: 'CASCADE'
+        },
+        createdAt: Sequelize.DATE,
+        updatedAt: Sequelize.DATE
+      });
+
+      // CartItems
+      await queryInterface.createTable('CartItems', {
+        CartItemId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         CartId: {
           type: Sequelize.INTEGER,
           allowNull: false,
@@ -139,10 +170,7 @@ module.exports = {
           },
           onDelete: 'CASCADE'
         },
-        quantity: {
-          type: Sequelize.INTEGER,
-          defaultValue: 1
-        },
+        quantity: { type: Sequelize.INTEGER, defaultValue: 1 },
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -169,27 +197,33 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
-      // BatchDetails
+      // BatchDetails (updated with sizeId & promotionId)
       await queryInterface.createTable('BatchDetails', {
         batchDetailId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         batchId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Batches',
-            key: 'batchId'
-          },
+          references: { model: 'Batches', key: 'batchId' },
           onDelete: 'CASCADE'
         },
         productId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Products',
-            key: 'productId'
-          },
+          references: { model: 'Products', key: 'productId' },
+          onDelete: 'CASCADE'
+        },
+        sizeId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'Sizes', key: 'sizeId' },
           onDelete: 'CASCADE'
         },
         quantity: Sequelize.INTEGER,
         costPrice: Sequelize.DECIMAL,
+        promotionId: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+          references: { model: 'Promotions', key: 'promotionId' },
+          onDelete: 'SET NULL'
+        },
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -197,7 +231,6 @@ module.exports = {
       // Payments
       await queryInterface.createTable('Payments', {
         paymentId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-        orderId: Sequelize.INTEGER,
         amount: Sequelize.DECIMAL,
         method: Sequelize.STRING,
         status: Sequelize.STRING,
@@ -206,28 +239,27 @@ module.exports = {
         updatedAt: Sequelize.DATE
       });
 
-      // Orders
+      // Orders (updated with promotionId FK)
       await queryInterface.createTable('Orders', {
         orderId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         userId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Users',
-            key: 'userId'
-          },
+          references: { model: 'Users', key: 'userId' },
           onDelete: 'CASCADE'
         },
         paymentId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Payments',
-            key: 'paymentId'
-          },
+          references: { model: 'Payments', key: 'paymentId' },
+          onDelete: 'SET NULL'
+        },
+        promotionId: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+          references: { model: 'Promotions', key: 'promotionId' },
           onDelete: 'SET NULL'
         },
         status: Sequelize.STRING,
         totalPrice: Sequelize.DECIMAL,
-        promotionId: Sequelize.INTEGER,
         createdAt: Sequelize.DATE,
         updatedAt: Sequelize.DATE
       });
@@ -237,21 +269,15 @@ module.exports = {
         orderDetailId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         orderId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Orders',
-            key: 'orderId'
-          },
+          references: { model: 'Orders', key: 'orderId' },
           onDelete: 'CASCADE'
         },
         productId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Products',
-            key: 'productId'
-          },
+          references: { model: 'Products', key: 'productId' },
           onDelete: 'CASCADE'
         },
-        unitPrice: Sequelize.DECIMAL,
+        unitPrice: Sequelize.DECIMAL
       });
 
       // Transactions
@@ -259,12 +285,10 @@ module.exports = {
         transactionId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         paymentId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Payments',
-            key: 'paymentId'
-          },
+          references: { model: 'Payments', key: 'paymentId' },
           onDelete: 'CASCADE'
         },
+        transactionDate: Sequelize.DATE,
         amount: Sequelize.DECIMAL,
         status: Sequelize.STRING,
         message: Sequelize.STRING,
@@ -277,18 +301,12 @@ module.exports = {
         reviewId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
         userId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'Users',
-            key: 'userId'
-          },
+          references: { model: 'Users', key: 'userId' },
           onDelete: 'CASCADE'
         },
         orderDetailId: {
           type: Sequelize.INTEGER,
-          references: {
-            model: 'OrderDetails',
-            key: 'orderDetailId'
-          },
+          references: { model: 'OrderDetails', key: 'orderDetailId' },
           onDelete: 'CASCADE'
         },
         rating: Sequelize.INTEGER,
@@ -298,7 +316,7 @@ module.exports = {
       });
     } catch (error) {
       console.error("🔥 MIGRATION ERROR:", error);
-      throw error; // rất quan trọng
+      throw error;
     }
   },
 
@@ -308,14 +326,17 @@ module.exports = {
     await queryInterface.dropTable('OrderDetails');
     await queryInterface.dropTable('Orders');
     await queryInterface.dropTable('Payments');
-    await queryInterface.dropTable('Sizes');
     await queryInterface.dropTable('BatchDetails');
     await queryInterface.dropTable('Batches');
     await queryInterface.dropTable('Promotions');
-    await queryInterface.dropTable('Products');
-    await queryInterface.dropTable('Categories');
     await queryInterface.dropTable('CartItems');
     await queryInterface.dropTable('Carts');
+    await queryInterface.dropTable('FavoriteItems');
+    await queryInterface.dropTable('Favorites');
+    await queryInterface.dropTable('Products');
+    await queryInterface.dropTable('Brands');
+    await queryInterface.dropTable('Sizes');
+    await queryInterface.dropTable('Categories');
     await queryInterface.dropTable('Users');
     await queryInterface.dropTable('Roles');
   }
