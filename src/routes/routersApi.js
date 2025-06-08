@@ -53,9 +53,9 @@ const initWebRoute = (app) => {
     router.delete("/delete-user/:id", verifyToken, deleteUser);
 
     //api CRUD product
-    router.get('/get-all-product', handleGetAllProduct);
+    router.get('/get-all-products', handleGetAllProduct);
     router.get('/get-product-by-page', handleGetProductByPage);
-    router.get('/get-product-by-id/:id', handleGetProductById);
+    router.get('/get-product-by-productId/:id', handleGetProductById);
     router.post('/create-new-product', uploadService.uploadMultipleImages(productUploadFields), handleCreateNewProduct);
     router.put('/update-product/:id', uploadService.uploadMultipleImages(productUploadFields), handleUpdateProduct);
     router.delete('/delete-product/:id', handleDeleteProduct);

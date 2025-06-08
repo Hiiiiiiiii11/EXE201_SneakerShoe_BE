@@ -2,7 +2,7 @@ import productService from '../services/productService.js'
 
 /**
  * @swagger
- * /api/get-all-product:
+ * /api/get-all-products:
  *   get:
  *     summary: Lấy tất cả product
  *     tags: [Products]
@@ -33,15 +33,15 @@ import productService from '../services/productService.js'
  *                         example: "Sneaker XYZ"
  *                       price:
  *                         type: number
- *                         example: 89.99
+ *                         format: float
  *                       brandId:
  *                         type: integer
  *                         example: 2
  *                       productImage:
  *                         type: string
  *                         example: "https://cloudinary.com/image.jpg"
- *                        productDetailImg:
- *                         type: array          # <-- sửa thành array
+ *                       productDetailImg:
+ *                         type: array          
  *                         items:
  *                            type: string
  */
@@ -58,7 +58,7 @@ export const handleGetAllProduct = async (req, res) => {
 
 /**
  * @swagger
- * /api/get-product-by-id/{id}:
+ * /api/get-product-by-productId/{id}:
  *   get:
  *     summary: Lấy product bằng id
  *     tags: [Products]
@@ -96,7 +96,8 @@ export const handleGetAllProduct = async (req, res) => {
  *                         nullable: true
  *                         example: "product"
  *                       price:
- *                         type: decimal
+ *                         type: number
+ *                         format: float
  *                         nullable: true
  *                         example: "10"
  *                       categoryName:
@@ -107,8 +108,8 @@ export const handleGetAllProduct = async (req, res) => {
  *                         type: string
  *                         nullable: true
  *                         example: "https:..."
- *                        productDetailImg:
- *                         type: array          # <-- sửa thành array
+ *                       productDetailImg:
+ *                         type: array         
  *                         items:
  *                            type: string
  */
@@ -205,7 +206,7 @@ export const handleGetProductByPage = async (req, res) => {
  *                 type: string
  *                 format: binary
  *               productDetailImg:
- *                 type: array          # <-- sửa thành array
+ *                 type: array          
  *                 items:
  *                    type: string
  *                    format: binary
@@ -277,7 +278,7 @@ export const handleCreateNewProduct = async (req, res) => {
  *                 type: string
  *                 format: binary
  *               productDetailImg:
- *                 type: array          # <-- sửa thành array
+ *                 type: array         
  *                 items:
  *                   type: string
  *                   format: binary
@@ -320,7 +321,7 @@ export const handleCreateNewProduct = async (req, res) => {
  *                       type: string
  *                       example: "https://res.cloudinary.com/...jpg"
  *                     productDetailImg:
- *                       type: array          # <-- sửa thành array
+ *                       type: array         
  *                       items:
  *                         type: string
  *                         format: binary
