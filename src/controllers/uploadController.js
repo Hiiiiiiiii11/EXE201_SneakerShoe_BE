@@ -6,7 +6,7 @@ import uploadService from '../services/uploadService.js';
  * @swagger
  * /api/upload-image:
  *   post:
- *     summary: Upload hình ảnh lên Cloudinary
+ *     summary: Upload nhiều hình ảnh lên Cloudinary
  *     tags: [Upload]
  *     requestBody:
  *       required: true
@@ -16,8 +16,10 @@ import uploadService from '../services/uploadService.js';
  *             type: object
  *             properties:
  *               image:
- *                 type: string
- *                 format: binary
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       200:
  *         description: Upload thành công
@@ -30,29 +32,39 @@ import uploadService from '../services/uploadService.js';
  *                   type: integer
  *                 errMessage:
  *                   type: string
- *                 imageUrl:
- *                   type: string
+ *                 urls:
+ *                   type: array
+ *                   items:
+ *                     type: string
  */
+
 export const handleUpLoadImage = (req, res) => {
     try {
-        const file = req.file
-        console.error('check file', file)
-        if (!file) {
+        const files = req.files?.image;  // Lấy các file đã upload ở trường 'image'
+        console.log('Uploaded files:', files);
+
+        if (!files || files.length === 0) {
             return res.status(400).json({
                 errCode: 1,
-                errMessage: 'Missing required parameter'
-            })
+                errMessage: 'Missing required image files'
+            });
         }
-        const response = uploadService.getUpLoadImageUrl(file);
-        return res.status(200).json(response)
 
-    } catch (e) {
-        console.error(e)
+        // Lấy ra các đường link Cloudinary (path)
+        const urls = files.map(file => file.path);
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'Upload thành công',
+            urls
+        });
+    } catch (error) {
+        console.error(error);
         return res.status(500).json({
             errCode: -1,
             errMessage: 'Internal server error'
-        })
+        });
     }
+};
 
-}
 

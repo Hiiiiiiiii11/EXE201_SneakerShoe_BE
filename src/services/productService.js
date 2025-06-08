@@ -4,7 +4,19 @@ const GetAllProduct = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const product = await db.Product.findAll({
-                attributes: ['productId', 'productName', 'price', 'brandId', 'productImage']
+                attributes: ['productId', 'productName', 'price', 'productImage', 'productDetailImg'],
+                include: [{
+                    model: db.Category,
+                    as: 'category',
+                    attributes: ['CategoryId', 'categoryName'],
+                },
+                {
+                    model: db.Brand,
+                    as: 'brand',
+                    attributes: ['brandId', 'brandName'],
+                }
+                ],
+
             });
             resolve({
                 errCode: 0,
@@ -36,8 +48,12 @@ const GetProductByPage = (page = 1, limit = 10, CategoryId) => {
                         model: db.Category,
                         as: 'category',
                         attributes: ['CategoryId', 'categoryName']
+                    }, {
+                        model: db.Brand,
+                        as: 'brand',
+                        attributes: ['brandId', 'brandName'],
                     }
-                ]
+                ],
             });
 
             resolve({
@@ -58,26 +74,42 @@ const GetProductByPage = (page = 1, limit = 10, CategoryId) => {
 const CreateNewProduct = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.productName || !data.price || !data.categoryId || !data.brandId || !data.productImage) {
+            // Nếu categoryId hoặc brandId là chuỗi rỗng thì coi như không truyền
+
+            if (!data.productName || !data.price || !data.productImage || !data.categoryId || !data.brandId) {
                 return resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameter'
                 });
             }
 
-            const category = await db.Category.findByPk(data.categoryId);
-            if (!category) return resolve({ errCode: 2, errMessage: 'Category does not exist' });
+            // Nếu categoryId tồn tại thì kiểm tra
+            if (data.categoryId) {
+                const category = await db.Category.findByPk(data.categoryId);
+                if (!category) return resolve({ errCode: 2, errMessage: 'Category does not exist' });
+            }
 
-            const brand = await db.Brand.findByPk(data.brandId);
-            if (!brand) return resolve({ errCode: 3, errMessage: 'Brand does not exist' });
+            // Nếu brandId tồn tại thì kiểm tra
+            if (data.brandId) {
+                const brand = await db.Brand.findByPk(data.brandId);
+                if (!brand) return resolve({ errCode: 3, errMessage: 'Brand does not exist' });
+            }
+
+            let detailImgString = null;
+            if (data.productDetailImg && Array.isArray(data.productDetailImg)) {
+                detailImgString = JSON.stringify(data.productDetailImg);
+            } else if (typeof data.productDetailImg === 'string') {
+                detailImgString = data.productDetailImg;
+            }
 
             let newProduct = await db.Product.create({
                 productName: data.productName,
                 description: data.description,
                 price: data.price,
-                categoryId: data.categoryId,
+                categoryId: data.categoryId,  // có thể undefined => Sequelize sẽ gán NULL
                 brandId: data.brandId,
-                productImage: data.productImage
+                productImage: data.productImage,
+                productDetailImg: data.productDetailImg // nếu bạn có field này
             });
 
             resolve({
@@ -152,7 +184,7 @@ const UpdateProduct = (data) => {
             }
 
 
-              // Ép kiểu categoryId và brandId nếu bị rỗng string
+            // Ép kiểu categoryId và brandId nếu bị rỗng string
             data.categoryId = data.categoryId === '' ? undefined : data.categoryId;
             data.brandId = data.brandId === '' ? undefined : data.brandId;
 
@@ -167,7 +199,7 @@ const UpdateProduct = (data) => {
                 if (!brand) return resolve({ errCode: 3, errMessage: 'Brand does not exist' });
             }
 
-        
+
 
             product.productName = data.productName ?? product.productName;
             product.description = data.description ?? product.description;
@@ -175,6 +207,14 @@ const UpdateProduct = (data) => {
             product.categoryId = data.categoryId ?? product.categoryId;
             product.brandId = data.brandId ?? product.brandId;
             product.productImage = data.productImage ?? product.productImage;
+
+            if (data.productDetailImg) {
+                if (Array.isArray(data.productDetailImg)) {
+                    product.productDetailImg = JSON.stringify(data.productDetailImg);
+                } else if (typeof data.productDetailImg === 'string') {
+                    product.productDetailImg = data.productDetailImg;
+                }
+            }
 
             let updateProduct = await product.save();
 
@@ -210,14 +250,15 @@ const GetProductById = (productId) => {
                         attributes: ['categoryName']
                     },
                     {
-                        model: db.BatchDetail,
-                        as: 'batchDetails'
-                    },
-                    {
                         model: db.Brand,
                         as: 'brand',
                         attributes: ['brandName']
+                    },
+                    {
+                        model: db.BatchDetail,
+                        as: 'batchDetails'
                     }
+
                 ]
             });
 

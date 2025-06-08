@@ -21,14 +21,16 @@ import brandService from "../services/brandsService.js";
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Brand'
  */
 export const getAllBrands = async (req, res) => {
   try {
     const brands = await brandService.getAllBrands();
     res.status(200).json(brands);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).json({
+      errCode: -1,
+      errMessage: 'Internal server error'
+    })
   }
 };
 
@@ -51,7 +53,6 @@ export const getAllBrands = async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Brand'
  *       404:
  *         description: Không tìm thấy brand
  */
@@ -60,7 +61,10 @@ export const getBrandById = async (req, res) => {
     const brand = await brandService.getBrandById(req.params.id);
     res.status(200).json(brand);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).json({
+      errCode: -1,
+      errMessage: 'Internal server error'
+    })
   }
 };
 
@@ -96,13 +100,17 @@ export const getBrandById = async (req, res) => {
  */
 export const createBrand = async (req, res) => {
   try {
-    const { brandName, description } = req.body;
-    const brandLogo = req.file?.path || null; // ✅ Cloudinary file path
+    const data = req.body;
+    const brandLogo = req.files?.brandLogo?.[0]?.path || null; // ✅ Cloudinary file path
+    console.log('check brand', brandLogo)
 
-    const newBrand = await brandService.createBrand({ brandName, description, brandLogo });
+    const newBrand = await brandService.createBrand(data, brandLogo);
     res.status(201).json(newBrand);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({
+      errCode: -1,
+      errMessage: 'Internal server error'
+    })
   }
 };
 
@@ -141,24 +149,23 @@ export const createBrand = async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Brand'
  *       404:
  *         description: Không tìm thấy brand
  */
 export const updateBrand = async (req, res) => {
   try {
-    const { brandName, description } = req.body;
-    const brandLogo = req.file?.path ?? undefined; // ✅ chỉ cập nhật nếu có file
+    const brandId = req.params.id
+    const data = req.body;
+    const brandLogo = req.files?.brandLogo?.[0]?.path || null;
 
-    const updated = await brandService.updateBrand(req.params.id, {
-      brandName,
-      description,
-      brandLogo
-    });
+    const updated = await brandService.updateBrand(brandId, data, brandLogo);
 
     res.status(200).json(updated);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).json({
+      errCode: -1,
+      errMessage: 'Internal server error'
+    })
   }
 };
 
@@ -186,6 +193,9 @@ export const deleteBrand = async (req, res) => {
     const result = await brandService.deleteBrand(req.params.id);
     res.status(200).json(result);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).json({
+      errCode: -1,
+      errMessage: 'Internal server error'
+    })
   }
 };

@@ -224,7 +224,8 @@ export const updateUser = async (req, res) => {
  */
 export const deleteUser = async (req, res) => {
   try {
-    const result = await userService.deleteUser(req.params.id);
+    const brandId = req.params.id
+    const result = await userService.deleteUser(brandId);
     return res.status(200).json(result);
   } catch (e) {
     console.error(e);

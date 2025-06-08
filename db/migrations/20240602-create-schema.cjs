@@ -93,7 +93,7 @@ module.exports = {
           onDelete: 'CASCADE'
         },
         productImage: Sequelize.STRING,
-        productDetailImg: Sequelize.STRING,
+        productDetailImg: Sequelize.JSON,
         brandId: {
           type: Sequelize.INTEGER,
           allowNull: true,

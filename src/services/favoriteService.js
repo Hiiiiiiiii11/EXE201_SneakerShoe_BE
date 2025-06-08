@@ -196,6 +196,46 @@ const DeleteFavoriteItem = (productId, userId) => {
         }
     })
 }
+const DeleteAllFavoriteItem = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!userId) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing userId"
+                })
+            } else {
+                const favorite = await db.Favorite.findOne({
+                    where: { userId: userId }
+                })
+                if (!favorite) {
+                    return resolve({
+                        errCode: 2,
+                        errMessage: "User dont have any favorite list"
+                    })
+
+                } else {
+                    await db.Favorite.destroy({
+                        where: { favoriteId: favorite.favoriteId }
+                    })
+                    await db.FavoriteItem.destroy({
+                        where: { favoriteId: favorite.favoriteId }
+                    })
+                    return resolve({
+                        errCode: 0,
+                        errMessage: "Delete all favorites item success"
+                    })
+                }
+            }
+
+        } catch (e) {
+            console.error(e);
+            reject(e);
+
+        }
+    })
+}
+
 export default {
-    GetAllFavorite, GetFavoriteByUserId, DeleteFavoriteItem, AddProductFavorite
+    GetAllFavorite, GetFavoriteByUserId, DeleteFavoriteItem, AddProductFavorite, DeleteAllFavoriteItem
 }

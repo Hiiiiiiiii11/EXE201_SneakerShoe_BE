@@ -36,7 +36,7 @@ export default (sequelize, DataTypes) => {
             allowNull: false
         },
         productDetailImg: {
-            type: DataTypes.STRING,
+            type: DataTypes.JSON,
             allowNull: true
         },
         productImage: {

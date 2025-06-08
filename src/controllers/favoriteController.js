@@ -225,3 +225,53 @@ export const handleDeleteFavoriteItem = async (req, res) => {
         })
     }
 }
+
+
+/**
+ * @swagger
+ * /api/delete-all-favorite-item/{id}:
+ *   delete:
+ *     summary: Xóa tất cả sản phẩm khỏi danh sách yêu thích
+ *     description: Xóa tất cả sản phẩm khỏi danh sách yêu thích của người dùng dựa và userId.
+ *     tags: [Favorites]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của user
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Kết quả tất cả sản phẩm khỏi danh sách yêu thích
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errCode:
+ *                   type: integer
+ *                   example: 0
+ *                 errMessage:
+ *                   type: string
+ *                   example: Delete all product from favorite list success
+ *       400:
+ *         description: Thiếu productId hoặc userId, hoặc sản phẩm không tồn tại
+ *       500:
+ *         description: Lỗi server nội bộ
+ */
+export const handleDeleteAllFavoriteItem = async (req, res) => {
+    try {
+
+        const userId = req.params.id
+        const response = await favoriteService.DeleteAllFavoriteItem(userId);
+        return res.status(200).json(response)
+
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: "Internal server error",
+        })
+    }
+}
