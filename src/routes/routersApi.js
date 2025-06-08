@@ -15,8 +15,12 @@ import { createReview, getAllReviews, updateReview, deleteReview, getReviewsByPr
 import { createSize, getAllSizes, getSizeById, updateSize, deleteSize } from "../controllers/sizeController.js";
 import { handlePayOSWebhook } from "../controllers/paymentController.js";
 import { handleCreateNewOrder, handleGetALLOrder, handleGetOrderByUserId } from "../controllers/orderController.js";
-import { handleAddProductFavorite, handleDeleteFavoriteItem, handleGetALLFavorite, handleGetFavoriteByUserId } from "../controllers/favoriteController.js";
+import { handleAddProductFavorite, handleDeleteAllFavoriteItem, handleDeleteFavoriteItem, handleGetALLFavorite, handleGetFavoriteByUserId } from "../controllers/favoriteController.js";
+import { createBrand, deleteBrand, getAllBrands, getBrandById, updateBrand } from "../controllers/brandsController.js";
+import { brandLogoField, productUploadFields, ImageField, userAvatarField } from "../utils/uploadField.js";
+
 let router = express.Router();
+
 
 const initWebRoute = (app) => {
 
@@ -26,7 +30,7 @@ const initWebRoute = (app) => {
     });
 
     //api upload va chuyen anh thanh link
-    router.post('/upload-image', uploadService.uploadImage(), handleUpLoadImage);
+    router.post('/upload-image', uploadService.uploadMultipleImages(ImageField), handleUpLoadImage);
 
     //api CRUD roles
     router.get('/get-all-roles', verifyToken, handleGetAllRoles);
@@ -42,27 +46,19 @@ const initWebRoute = (app) => {
     router.post("/customer/create-user", createUserBySelf);
     // Admin create user
     router.post("/admin/create-user", verifyToken, isAdmin, createUserByAdmin);
-    //api CRUD users
-    //khi FE gọi api này thì cần phải truyền token vào header để xác thực người dùng
-    // nếu không có token hoặc token không hợp lệ thì sẽ trả về lỗi 401 Unauthorized
-    // Authorization: `Bearer ${token}`
-    router.get("/get-all-users", verifyToken, isAdmin, getAllUsers);
-    router.get("/get-user-detail/:id", verifyToken, getUserById);
-    router.put("/update-user/:id", uploadService.uploadImage(), verifyToken, updateUser);
+    //api CRUD users 
+    router.get("/get-all-users", getAllUsers);
+    router.get("/get-user-detail/:id", getUserById);
+    router.put("/update-user/:id", uploadService.uploadMultipleImages(userAvatarField), updateUser);
     router.delete("/delete-user/:id", verifyToken, deleteUser);
-
-
-
-
-
 
     //api CRUD product
     router.get('/get-all-product', handleGetAllProduct);
     router.get('/get-product-by-page', handleGetProductByPage);
     router.get('/get-product-by-id/:id', handleGetProductById);
-    router.post('/create-new-product', uploadService.uploadImage(), verifyToken, handleCreateNewProduct);
-    router.put('/update-product/:id', uploadService.uploadImage(), verifyToken, handleUpdateProduct);
-    router.delete('/delete-product/:id', verifyToken, handleDeleteProduct);
+    router.post('/create-new-product', uploadService.uploadMultipleImages(productUploadFields), handleCreateNewProduct);
+    router.put('/update-product/:id', uploadService.uploadMultipleImages(productUploadFields), handleUpdateProduct);
+    router.delete('/delete-product/:id', handleDeleteProduct);
 
     //api CRUD category
     router.get('/get-all-category', verifyToken, handleGetAllCategory);
@@ -115,6 +111,13 @@ const initWebRoute = (app) => {
     router.put("/update-size/:id", updateSize);
     router.delete("/delete-size/:id", deleteSize);
 
+    //API CRUD Brands
+    router.get('/get-all-brands', getAllBrands);
+    router.get('/get-brand-by-id/:id', getBrandById);
+    router.post('/create-new-brand', uploadService.uploadMultipleImages(brandLogoField), createBrand);
+    router.put('/update-brand/:id', uploadService.uploadMultipleImages(brandLogoField), updateBrand);
+    router.delete('/delete-brand/:id', deleteBrand);
+
     //api CRUD Orders
     router.get('/get-all-order', handleGetALLOrder);
     router.post('/create-new-order/:id/promotion/:promotionId', handleCreateNewOrder);
@@ -126,6 +129,7 @@ const initWebRoute = (app) => {
     router.get('/get-favorite-item-by-user-id/:id', handleGetFavoriteByUserId);
     router.post('/add-product-to-favorite/:id', handleAddProductFavorite);
     router.delete('/delete-favorite-item/:id', handleDeleteFavoriteItem);
+    router.delete('/delete-all-favorite-item/:id', handleDeleteAllFavoriteItem);
 
     //status thanh toán 
     router.post("/payos/payment", handlePayOSWebhook);

@@ -1,4 +1,5 @@
 import productService from '../services/productService.js'
+
 /**
  * @swagger
  * /api/get-all-product:
@@ -19,97 +20,6 @@ import productService from '../services/productService.js'
  *                 errMessage:
  *                   type: string
  *                   example: OK
- *                 roles:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       productId:
- *                         type: integer
- *                         example: 1
- *                       productName:
- *                         type: string
- *                         nullable: true
- *                         example: "CUSTOMER"
- *                       price:
- *                         type: decimal
- *                         nullable: true
- *                         example: "$10"
- *                       categoryName:
- *                         type: string
- *                         nullable: true
- *                         example: "Shoe"
- *                       productImgae:
- *                         type: string
- *                         nullable: true
- *                         example: "https:..."
- */
-
-export const handleGetAllProduct = async (req, res) => {
-    try {
-        const response = await productService.GetAllProduct();
-        return res.status(200).json(response)
-
-    } catch (e) {
-        console.error(e);
-        return res.status(500).json({
-            errCode: 1,
-            errMessage: "Internal server error"
-        })
-    }
-}
-
-/**
- * @swagger
- * /api/get-product-by-page:
- *   get:
- *     summary: Lấy danh sách sản phẩm có phân trang và lọc theo category
- *     tags: [Products]
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           example: 1
- *         required: false
- *         description: Trang hiện tại
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           example: 10
- *         required: false
- *         description: Số lượng sản phẩm mỗi trang
- *       - in: query
- *         name: CategoryId
- *         schema:
- *           type: integer
- *           example: "1"
- *         required: false
- *         description: Tên danh mục sản phẩm
- *     responses:
- *       200:
- *         description: Danh sách các sản phẩm
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 errCode:
- *                   type: integer
- *                   example: 0
- *                 errMessage:
- *                   type: string
- *                   example: OK
- *                 totalItems:
- *                   type: integer
- *                   example: 100
- *                 totalPages:
- *                   type: integer
- *                   example: 10
- *                 currentPage:
- *                   type: integer
- *                   example: 1
  *                 products:
  *                   type: array
  *                   items:
@@ -120,41 +30,30 @@ export const handleGetAllProduct = async (req, res) => {
  *                         example: 1
  *                       productName:
  *                         type: string
- *                         nullable: true
- *                         example: "Giày Nike"
+ *                         example: "Sneaker XYZ"
  *                       price:
  *                         type: number
- *                         format: float
- *                         nullable: true
- *                         example: 99.99
- *                       category:
- *                         type: object
- *                         properties:
- *                           categoryName:
- *                             type: string
- *                             example: "Shoe"
+ *                         example: 89.99
+ *                       brandId:
+ *                         type: integer
+ *                         example: 2
  *                       productImage:
  *                         type: string
- *                         nullable: true
  *                         example: "https://cloudinary.com/image.jpg"
+ *                        productDetailImg:
+ *                         type: array          # <-- sửa thành array
+ *                         items:
+ *                            type: string
  */
-
-export const handleGetProductByPage = async (req, res) => {
+export const handleGetAllProduct = async (req, res) => {
     try {
-        const { page, limit, CategoryId } = req.query;
-        console.error('check', req.query)
-
-        const response = await productService.GetProductByPage(page, limit, CategoryId);
-        return res.status(200).json(response);
-
+        const response = await productService.GetAllProduct();
+        return res.status(200).json(response)
     } catch (e) {
         console.error(e);
-        return res.status(500).json({
-            errCode: 1,
-            errMessage: "Internal server error"
-        });
+        return res.status(500).json({ errCode: 1, errMessage: "Internal server error" });
     }
-};
+}
 
 
 /**
@@ -204,10 +103,14 @@ export const handleGetProductByPage = async (req, res) => {
  *                         type: string
  *                         nullable: true
  *                         example: "Shoe"
- *                       productImgae:
+ *                       productImage:
  *                         type: string
  *                         nullable: true
  *                         example: "https:..."
+ *                        productDetailImg:
+ *                         type: array          # <-- sửa thành array
+ *                         items:
+ *                            type: string
  */
 export const handleGetProductById = async (req, res) => {
     try {
@@ -225,6 +128,51 @@ export const handleGetProductById = async (req, res) => {
 
 /**
  * @swagger
+ * /api/get-product-by-page:
+ *   get:
+ *     summary: Lấy danh sách sản phẩm có phân trang và lọc theo category
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         required: false
+ *         description: Trang hiện tại
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         required: false
+ *         description: Số lượng sản phẩm mỗi trang
+ *       - in: query
+ *         name: CategoryId
+ *         schema:
+ *           type: integer
+ *           example: "1"
+ *         required: false
+ *         description: Tên danh mục sản phẩm
+ *     responses:
+ *       200:
+ *         description: Danh sách các sản phẩm
+ */
+export const handleGetProductByPage = async (req, res) => {
+    try {
+        const { page, limit, CategoryId } = req.query;
+        console.error('check', req.query)
+        const response = await productService.GetProductByPage(page, limit, CategoryId);
+        return res.status(200).json(response);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ errCode: 1, errMessage: "Internal server error" });
+    }
+};
+
+
+/**
+ * @swagger
  * /api/create-new-product:
  *   post:
  *     summary: Tạo sản phẩm mới với ảnh upload
@@ -235,6 +183,13 @@ export const handleGetProductById = async (req, res) => {
  *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - productName
+ *               - price
+ *               - categoryId
+ *               - brandId
+ *               - productImage
+ *               - productDetailImg
  *             properties:
  *               productName:
  *                 type: string
@@ -244,100 +199,48 @@ export const handleGetProductById = async (req, res) => {
  *                 type: number
  *               categoryId:
  *                 type: integer
- *               image:
+ *               brandId:
+ *                 type: integer
+ *               productImage:
  *                 type: string
  *                 format: binary
+ *               productDetailImg:
+ *                 type: array          # <-- sửa thành array
+ *                 items:
+ *                    type: string
+ *                    format: binary
  *     responses:
  *       200:
  *         description: Tạo sản phẩm thành công
  */
-
 export const handleCreateNewProduct = async (req, res) => {
     try {
-        const file = req.file;
-        if (!file) {
-            return res.status(400).json({
-                errCode: 1,
-                errMessage: 'Missing image file'
-            });
+        const files = req.files; // multer xử lý nhiều file
+
+        // Kiểm tra bắt buộc productImage phải có
+        if (!files || !files.productImage || files.productImage.length === 0) {
+            return res.status(400).json({ errCode: 1, errMessage: 'Missing productImage file' });
         }
-        req.body.productImage = file.path;
+
+        // Gán đường dẫn file productImage (1 file)
+        req.body.productImage = files.productImage[0].path;
+
+        // Gán đường dẫn file productDetailImg (nhiều file)
+        if (files.productDetailImg && files.productDetailImg.length > 0) {
+            // Lấy tất cả đường dẫn của các file productDetailImg thành mảng
+            req.body.productDetailImg = files.productDetailImg.map(file => file.path);
+        }
+
         const response = await productService.CreateNewProduct(req.body);
-        return res.status(200).json(response) // Sửa lại cách trả dữ liệu);
+        return res.status(200).json(response);
 
     } catch (e) {
         console.error(e);
-        return res.status(500).json({
-            errCode: -1,
-            errMessage: "Internal server error"
-        })
+        return res.status(500).json({ errCode: -1, errMessage: "Internal server error" });
     }
 }
 
 
-/**
- * @swagger
- * /api/delete-product/{id}:
- *   delete:
- *     summary: Xóa vai trò theo ID
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID của vai trò cần xóa
- *     responses:
- *       200:
- *         description: Xóa thành công
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 errCode:
- *                   type: integer
- *                 errMessage:
- *                   type: string
- *       400:
- *         description: Thiếu ID
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 errCode:
- *                   type: integer
- *                   example: 1
- *                 message:
- *                   type: string
- *                   example: Missing required parameter!
- *       500:
- *         description: Lỗi server
- */
-export const handleDeleteProduct = async (req, res) => {
-    try {
-        const productId = req.params.id
-        if (!productId) {
-            return res.status(400).json({
-                errCode: 1,
-                message: "Missing required parameter!"
-            });
-        }
-        const response = await productService.DeleteProduct(productId)
-        return res.status(200).json(response)
-
-    } catch (e) {
-        console.error(e);
-        return res.status(500).json({
-            errCode: -1,
-            errMessage: 'Internal server error'
-        })
-    }
-
-
-}
 
 /**
  * @swagger
@@ -368,11 +271,16 @@ export const handleDeleteProduct = async (req, res) => {
  *                 format: float
  *               categoryId:
  *                 type: integer
- *               stock:
+ *               brandId:
  *                 type: integer
- *               image:
+ *               productImage:
  *                 type: string
  *                 format: binary
+ *               productDetailImg:
+ *                 type: array          # <-- sửa thành array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       200:
  *         description: Cập nhật sản phẩm thành công
@@ -405,43 +313,85 @@ export const handleDeleteProduct = async (req, res) => {
  *                     categoryId:
  *                       type: integer
  *                       example: 2
- *                     stock:
+ *                     brandId:
  *                       type: integer
- *                       example: 15
+ *                       example: 1
  *                     productImage:
  *                       type: string
  *                       example: "https://res.cloudinary.com/...jpg"
- *       400:
- *         description: Thiếu tham số hoặc dữ liệu không hợp lệ
- *       500:
- *         description: Lỗi server
+ *                     productDetailImg:
+ *                       type: array          # <-- sửa thành array
+ *                       items:
+ *                         type: string
+ *                         format: binary
  */
-
 export const handleUpdateProduct = async (req, res) => {
     try {
         const productId = req.params.id;
-        const file = req.file;
+        const files = req.files;
         const data = req.body;
-        // console.error("check", productId, data)
-        if (!productId || !data) {
-            return res.status(400).json({
-                errCode: 1,
-                message: "Missing required parameter!"
-            });
+
+        if (!productId) {
+            return res.status(400).json({ errCode: 1, message: "Missing required parameter!" });
         }
+
         data.productId = productId;
 
-        if (file && file.path) {
-            data.productImage = file.path;
+        // Nếu có upload productImage mới thì cập nhật
+        if (files && files.productImage && files.productImage.length > 0) {
+            data.productImage = files.productImage[0].path;
         }
-        const response = await productService.UpdateProduct(data)
-        return res.status(200).json(response)
 
+        if (files && files.productDetailImg && files.productDetailImg.length > 0) {
+            data.productDetailImg = files.productDetailImg.map(file => file.path);
+        }
+
+        const response = await productService.UpdateProduct(data);
+        return res.status(200).json(response);
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({
-            errCode: -1,
-            errMessage: 'Internal server error'
-        })
+        console.error(e);
+        return res.status(500).json({ errCode: -1, errMessage: 'Internal server error' });
     }
 }
+
+
+/**
+ * @swagger
+ * /api/delete-product/{id}:
+ *   delete:
+ *     summary: Xóa product theo ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID của product cần xóa
+ *     responses:
+ *       200:
+ *         description: Xóa thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errCode:
+ *                   type: integer
+ *                 errMessage:
+ *                   type: string
+ */
+export const handleDeleteProduct = async (req, res) => {
+    try {
+        const productId = req.params.id
+        if (!productId) {
+            return res.status(400).json({ errCode: 1, message: "Missing required parameter!" });
+        }
+        const response = await productService.DeleteProduct(productId)
+        return res.status(200).json(response)
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ errCode: -1, errMessage: 'Internal server error' })
+    }
+}
+
